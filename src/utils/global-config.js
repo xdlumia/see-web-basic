@@ -1,0 +1,28 @@
+/**
+* @desc 全局配置
+* @author web-吴森
+* @date 2018年7月10日
+**/
+import '../assets/css/app.css'
+import './verify'
+
+import api from '../api'
+import filters from './filters.js'
+import local from './localStorage.js'
+import dictionary from './dictionary'
+import components from '../components'
+import buttonAuthority from './button-authority'
+
+export default {
+  install: function (vm) {
+    vm.prototype.$api = api
+    vm.prototype.$local = local
+
+    vm.mixin(dictionary)
+    vm.mixin(components)
+    vm.mixin(buttonAuthority)
+    vm.mixin({
+      filters
+    })
+  }
+}
