@@ -69,6 +69,7 @@
     watch: {
       value: function (newValue) {
         this.currentValue = newValue
+        this.loadCurrentPerson(newValue)
       }
     },
     methods: {
@@ -94,7 +95,7 @@
 
             axios.get(baseURL.login + '/rmUser/userInfo', {params: {id: value}}).then((res) => {
               if (!this.currentValue && res) {
-                this.options = [{userId: value, employeeName: res.name}]
+                this.options = [{userId: value, employeeName: res.data.name}]
                 this.currentValue = this.isObj ? this.options[0] : value
               }
             })
