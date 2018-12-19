@@ -105,7 +105,7 @@ var verify = {
     if(value = '' || reg.test(value) ) {
         callback()
     } else {
-        return callback(new Error('银行卡号不合法'))
+        return callback(new Error('请输入12-19位银行卡号'))
     }
   },
   telePhone: (_rule, value, callback) => {
