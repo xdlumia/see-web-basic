@@ -101,7 +101,7 @@ var verify = {
     }
   },
   bankCard: (_rule, value, callback) => {
-    let reg = /^\d{15,19}$/
+    let reg = /^\d{12,19}$/
     if(value = '' || reg.test(value) ) {
         callback()
     } else {
