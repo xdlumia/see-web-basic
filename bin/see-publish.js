@@ -1,11 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * @author 闫超
- * @date 2018年11月13日
- * 发布版本
- **/
-
 const readlineSync = require('readline-sync');
 const fs = require('fs');
 const path = require('path');

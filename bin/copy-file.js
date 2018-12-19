@@ -1,12 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * @author 闫超
- * @date 2018年11月13日
- * 该JS文件作用是复制文件到一个目录。
- *
- * 目前是复制src下所有非JS文件到lib目录
- **/
 const fs = require('fs');
 const aglob = require('aglob');
 const path = require('path');
