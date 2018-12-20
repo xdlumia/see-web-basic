@@ -1,63 +1,1 @@
-var spawn = require('child_process').spawn
-
-function spawnPlease(command, args, stdin, options) {
-
-  // if there are only three arguments and the third argument is an object, treat it as the options object and set stdin to null
-  if (!options && typeof stdin === 'object') {
-    options = stdin
-    stdin = undefined
-  }
-
-  // defaults
-  options = options || {}
-  if (options.rejectOnError === undefined) {
-    options.rejectOnError = true
-  }
-
-  var stdout = ''
-  var stderr = ''
-  var child = spawn(command, args, options)
-
-  if (!spawnPlease.Promise) {
-    throw new Error('No built-in Promise. You will need to use a Promise library and spawnPlease.Promise = Promise.')
-  }
-
-  return new spawnPlease.Promise(function (resolve, reject) {
-
-    if (stdin !== undefined) {
-      child.stdin.write(stdin)
-    }
-    child.stdin.end()
-
-    child.stdout.on('data', function (data) {
-      stdout += data
-      console.log(stdout)
-    })
-
-    child.stderr.on('data', function (data) {
-      stderr += data
-      console.error(stderr)
-    })
-
-    if (options.rejectOnError) {
-      child.addListener('error', function (error) {
-        reject(error)
-      })
-    }
-
-    child.on('close', function (code) {
-      if (code !== 0 && options.rejectOnError) {
-        // 执行脚本失败后就退出程序
-        process.exit()
-      }
-      else {
-        resolve()
-      }
-    })
-
-  })
-}
-
-spawnPlease.Promise = typeof Promise !== 'undefined' ? Promise : null
-
-module.exports = spawnPlease
+var spawn = require('child_process').spawnfunction spawnPlease(command, args, stdin, options) {  // if there are only three arguments and the third argument is an object, treat it as the options object and set stdin to null  if (!options && typeof stdin === 'object') {    options = stdin    stdin = undefined  }  // defaults  options = options || {}  if (options.rejectOnError === undefined) {    options.rejectOnError = true  }  var stdout = ''  var stderr = ''  var child = spawn(command, args, options)  if (!spawnPlease.Promise) {    throw new Error('No built-in Promise. You will need to use a Promise library and spawnPlease.Promise = Promise.')  }  return new spawnPlease.Promise(function (resolve, reject) {    if (stdin !== undefined) {      child.stdin.write(stdin)    }    child.stdin.end()    child.stdout.on('data', function (data) {      stdout += data      console.log(stdout)    })    child.stderr.on('data', function (data) {      stderr += data      console.error(stderr)    })    if (options.rejectOnError) {      child.addListener('error', function (error) {        reject(error)      })    }    child.on('close', function (code) {      if (code !== 0 && options.rejectOnError) {        // 执行脚本失败后就退出程序        process.exit()      }      else {        resolve()      }    })  })}spawnPlease.Promise = typeof Promise !== 'undefined' ? Promise : nullmodule.exports = spawnPlease
