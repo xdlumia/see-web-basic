@@ -26,4 +26,4 @@ else
   npm publish --tag beta
 fi
 
-echo -e "\E[1;32mPublish success! Current Version is  $VERSION.\E[0m"
+echo -e "\033[1;32mPublish success! Current Version is  $VERSION.\033[0m"
