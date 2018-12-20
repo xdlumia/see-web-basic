@@ -10,7 +10,7 @@ const createApi = (config, serviceName) => {
 
     delete config[mockKey]
 
-    let generateApiFunction = function (url, method, useMock) {
+    let generateApiFunction = function (url, method, useMock, config) {
         let userUrlParam = false;
         let urls = url.split(reg)
 
@@ -35,7 +35,7 @@ const createApi = (config, serviceName) => {
 
             return Api[method](serviceUrl + (userUrlParam ? urls.reduce((previousValue, currentValue, currentIndex) => {
                 return currentIndex === 0 ? currentValue : previousValue + urlParams.shift() + currentValue
-            }, null) : url), params)
+            }, null) : url), params, config)
         }
     };
 
@@ -58,11 +58,11 @@ const createApi = (config, serviceName) => {
             methods = [methods]
         }
 
-        result[key] = generateApiFunction(url, methods[0].toLowerCase(), useMock)
+        result[key] = generateApiFunction(url, methods[0].toLowerCase(), useMock, option.config)
 
         if (methods.length > 1) {
             for (let method of methods) {
-                result[key][method.toLowerCase()] = generateApiFunction(url, method, useMock)
+                result[key][method.toLowerCase()] = generateApiFunction(url, method, useMock, option.config)
             }
         }
     }

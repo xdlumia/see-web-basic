@@ -39,13 +39,13 @@ axios.interceptors.response.use(response => {
     return Promise.reject(res.msg);
   }
 
-  if (['post', 'put', 'delete'].includes(response.config.method) && res.code == 200) {
+  if (res.code == 200 && (response.config.isShowMessage !== undefined ? response.config.isShowMessage : response.config.method !== 'get')) {
     Message.success({
-      message: res.msg,
+      message: response.config.msg || res.msg,
       duration: 3000,
       dangerouslyUseHTMLString: true,
       showClose: true
-    })
+    });
   }
 
   // 成功返回数据
@@ -82,7 +82,7 @@ const methods = {
 
 Object.keys(methods).forEach(item => {
   api[item] = function(url, params, config) {
-    let data = methods[item].isParams ? { params: params } : params;
+    let data = methods[item].isParams ? { params: params, ...config} : params;
     return axios[item](url, data, config);
   }
 })
