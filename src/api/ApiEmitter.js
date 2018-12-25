@@ -22,8 +22,10 @@ const createApi = (config, serviceName) => {
             let serviceUrl = ''
 
             if (!useMock) {
+                serviceUrl = baseURL[serviceName]
+
                 if (!serviceUrl) {
-                    throw new Error(`serviceUrl ${serviceName} 不存在!`)
+                    throw new Error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
                 }
 
                 if (userUrlParam) {
