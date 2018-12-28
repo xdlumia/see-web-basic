@@ -15,7 +15,7 @@ var verify = {
   positiveNum: function positiveNum(_rule, value, callback) {
     // /^\d+(?=\.{0,1}\d+$|$)/
     var reg = new RegExp('^(0|([1-9][0-9]*))$');
-    if (value == '' || reg.test(value)) {
+    if (!value|| reg.test(value)) {
       callback();
     } else {
       return callback(new Error("只能是正整数"));
@@ -24,7 +24,7 @@ var verify = {
   // 年龄
   age: function age(_rule, value, callback) {
     var reg = new RegExp('^(0|[1-9]|[1-9][0-9]|1[0-1][0-9]|120)$');
-    if (value == '' || reg.test(value)) {
+    if (!value|| reg.test(value)) {
       callback();
     } else {
       return callback(new Error("只能是0到120的正整数"));
@@ -34,7 +34,7 @@ var verify = {
   // 手机号验证
   phone: function phone(_rule, value, callback) {
     var reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
-    if (value == '' || reg.test(value)) {
+    if (!value|| reg.test(value)) {
       callback();
     } else {
       return callback(new Error("请输入正确的手机号码"));
@@ -44,7 +44,7 @@ var verify = {
   // 用户名验证
   name: function name(_rule, value, callback) {
     var reg = new RegExp('^([\u4E00-\u9FA5]|[a-zA-Z])+$');
-    if (value == '' || reg.test(value)) {
+    if (!value|| reg.test(value)) {
       callback();
     } else {
       return callback(new Error("只能是中文或者英文！"));
@@ -64,7 +64,7 @@ var verify = {
   number: function number(_rule, value, callback) {
     // /^\d+(?=\.{0,1}\d+$|$)/
     var reg = /^(\+|-)?\d+($|\.\d+$)/;
-    if (value == '' || reg.test(value)) {
+    if (!value|| reg.test(value)) {
       callback();
     } else {
       return callback(new Error("只能是数字"));
@@ -86,7 +86,7 @@ var verify = {
   },
   price: function price(_rule, value, callback) {
     var reg = /^((-)?([1-9]\d*(\.\d{1,2})?)|((0)|((-)?0(\.(([1-9][0-9]?)|(0[1-9]))))))$/;
-    if (value == '' || reg.test(value)) {
+    if (!value || reg.test(value)) {
       callback();
     } else {
       return callback(new Error("金额不合法！"));
@@ -94,27 +94,27 @@ var verify = {
   },
   positiveFloat: function positiveFloat(_rule, value, callback) {
     var reg = /^(([1-9]\d*(\.\d{1,2})?)|(0(\.(([1-9][0-9]?)|(0[1-9])))?))$/;
-    if (value == '' || reg.test(value)) {
+    if (!value|| reg.test(value)) {
       callback();
     } else {
       return callback(new Error("正小数不合法！"));
     }
   },
-  bankCard: (_rule, value, callback) => {
-    let reg = /^\d{12,19}$/
-    if(value = '' || reg.test(value) ) {
-        callback()
+  bankCard: function bankCard(_rule, value, callback) {
+    var reg = /^\d{12,19}$/;
+    if (!value || reg.test(value)) {
+      callback();
     } else {
-        return callback(new Error('请输入12-19位银行卡号'))
+      return callback(new Error('请输入12-19位银行卡号'));
     }
   },
-  telePhone: (_rule, value, callback) => {
-      if(value = '' || (value.length >= 7 && value.length <= 20)) {
-          callback();
-      } else {
-          return callback(new Error("电话不合法"));
-      }
-  },
+  telePhone: function telePhone(_rule, value, callback) {
+    if (!value || value.length >= 7 && value.length <= 20) {
+      callback();
+    } else {
+      return callback(new Error("电话不合法"));
+    }
+  }
 };
 
 var _iteratorNormalCompletion = true;
