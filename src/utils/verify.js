@@ -101,7 +101,7 @@ var verify = {
     }
   },
   bankCard: function bankCard(_rule, value, callback) {
-    var reg = /^[0-9\*]{12,19}$/;
+    var reg = /^[a-zA-Z0-9\*]{12,19}$/;
     if (!value || reg.test(value)) {
       callback();
     } else {
