@@ -75,5 +75,9 @@ export default {
 
       return findInArr(dictionaryArr, key, idKey, valueKey)
     }
+  },
+  // 供外部直接调用的
+  defineDictionary (dicName, arr) {
+    Vue.util.defineReactive(dictionaryCache, dicName, arr)
   }
 }
