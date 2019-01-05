@@ -105,7 +105,7 @@
             Promise.all(value.map(item => {
               return axios.get(baseURL.login + '/rmUser/userInfo', {params: {id: this.isObj ? item[this.valueKey] : item}})
                 .then(res => {
-                  return {userId: res.id, employeeName: res.name}
+                  return {userId: res.data.id, employeeName: res.data.name}
                 })
             }))
               .then(options => {
