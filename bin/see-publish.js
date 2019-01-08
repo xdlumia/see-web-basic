@@ -40,7 +40,7 @@ async function publish() {
    -- are you sure? (y/n${isRelease ? '/u' : ''})`)
 
 
-  if (confirm) {y
+  if (confirm) {
     // 可以选择升级版本
     if (confirm.toLowerCase() === 'u' || confirm.toLowerCase() === 'uu') {
       if (confirm.toLowerCase() === 'u') {
