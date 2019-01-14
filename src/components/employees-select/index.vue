@@ -69,7 +69,6 @@
     watch: {
       value: function (newValue) {
         this.currentValue = newValue
-        this.loadCurrentPerson(newValue)
       }
     },
     methods: {
