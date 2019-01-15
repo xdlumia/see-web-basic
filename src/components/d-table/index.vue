@@ -127,9 +127,9 @@ export default {
         });
     },
     // 重新请求
-    reload() {
+    reload(page) {
       // 如果有分页
-      if(this.paging){
+      if(this.paging && page){
         this.params.page = 1;
       }
       // api动态加载完 开始重新请求数据
