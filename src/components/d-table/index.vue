@@ -130,7 +130,7 @@ export default {
     reload(page) {
       // 如果有分页
       if(this.paging && page){
-        this.params.page = 1;
+        this.params.page = page;
       }
       // api动态加载完 开始重新请求数据
       this.$nextTick(()=>{
