@@ -76,8 +76,14 @@ export default {
       return findInArr(dictionaryArr, key, idKey, valueKey)
     }
   },
-  // 供外部直接调用的
+  // 供外部直接调用的,自定义字典
   defineDictionary (dicName, arr) {
     Vue.util.defineReactive(dictionaryCache, dicName, arr)
+  },
+  // 供外部直接调用的,当字典表发生变化时，刷新缓存
+  refreshCache(dicName) {
+    if (dictionaryCache.hasOwnProperty(dicName)) {
+      delete dictionaryCache[dicName]
+    }
   }
 }
