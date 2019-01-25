@@ -86,6 +86,7 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    // 图片点击事件
     viewPriver(e) {
       // 返回其事件监听器触发该事件的元素。
       let currentTarget = e.currentTarget;
@@ -98,7 +99,6 @@ export default {
       let imgArr = currentTarget.querySelectorAll("img");
       this.viewVisible = true;
       // 当前点击图片的下标
-      let index = 0;
       this.imgSrcList = [];
       imgArr.forEach((item, i) => {
         this.imgSrcList.push({
@@ -107,7 +107,7 @@ export default {
         });
         // 获取当前图片的下标
         if (item == target) {
-          this.imgcurrIndex = index;
+          this.imgcurrIndex = i
         }
       });
       this.imgCurr = this.imgSrcList[this.imgcurrIndex];
