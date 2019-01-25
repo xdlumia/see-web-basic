@@ -8,6 +8,7 @@ import dTable from './d-table';
 import sidePopup from './side-popup';
 import employeesChosen from './employees-chosen';
 import employeesSelect from './employees-select';
+import viewPic from './view-pic';
 
 export default {
   components: {
@@ -15,6 +16,7 @@ export default {
     dTable: dTable,
     sidePopup: sidePopup,
     employeesSelect: employeesSelect,
-    employeesChosen: employeesChosen
+    employeesChosen: employeesChosen,
+    viewPic: viewPic,
   }
 };
