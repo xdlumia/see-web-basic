@@ -75,7 +75,7 @@
       queryAllPersons(queryString) {
         this.loading = true;
         // TODO: 这个地址在see-web-system
-        this.$api.bizSystemService.getEmployeeList({
+        this.$api.bizSystemService.fetchEmployeeList({
           page: 1,
           employeeName: queryString,
           limit: 20
