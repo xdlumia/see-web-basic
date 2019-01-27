@@ -68,7 +68,10 @@
     },
     watch: {
       value: function (newValue) {
-        this.currentValue = newValue
+        if (this.currentValue !== newValue) {
+          this.currentValue = newValue
+          this.loadCurrentPerson(newValue)
+        }
       }
     },
     methods: {
@@ -127,6 +130,7 @@
       },
       handlePersonSelected(item) {
         this.$emit('input', item)
+        this.currentValue = item
 
         // 先处理下单选
         if (!this.isObj && !this.multiple) {
