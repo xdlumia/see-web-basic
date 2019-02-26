@@ -12,7 +12,7 @@ import Schema from 'async-validator';
 
 var verify = {
   // 正整数
-  positiveNum: function positiveNum(_rule, value, callback) {
+  positiveNum(_rule, value, callback) {
     // /^\d+(?=\.{0,1}\d+$|$)/
     var reg = new RegExp('^(0|([1-9][0-9]*))$');
     if (!value|| reg.test(value)) {
@@ -22,7 +22,7 @@ var verify = {
     }
   },
   // 年龄
-  age: function age(_rule, value, callback) {
+  age(_rule, value, callback) {
     var reg = new RegExp('^(0|[1-9]|[1-9][0-9]|1[0-1][0-9]|120)$');
     if (!value|| reg.test(value)) {
       callback();
@@ -32,7 +32,7 @@ var verify = {
   },
 
   // 手机号验证
-  phone: function phone(_rule, value, callback) {
+  phone(_rule, value, callback) {
     var reg = /^[1][0-9]{10}$/;
     if (!value|| reg.test(value)) {
       callback();
@@ -42,7 +42,7 @@ var verify = {
   },
 
   // 用户名验证
-  name: function name(_rule, value, callback) {
+  name(_rule, value, callback) {
     var reg = new RegExp('^([\u4E00-\u9FA5]|[a-zA-Z])+$');
     if (!value|| reg.test(value)) {
       callback();
@@ -51,7 +51,7 @@ var verify = {
     }
   },
   // 身份证验证
-  IDCard: function IDCard(_rule, value, callback) {
+  IDCard(_rule, value, callback) {
     var reg = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
     // validateIdCard(value)
     if (value === '' || reg.test(value)) {
@@ -61,7 +61,7 @@ var verify = {
     }
   },
   // 判断是否是数字
-  number: function number(_rule, value, callback) {
+  number(_rule, value, callback) {
     // /^\d+(?=\.{0,1}\d+$|$)/
     var reg = /^(\+|-)?\d+($|\.\d+$)/;
     if (!value|| reg.test(value)) {
@@ -71,7 +71,7 @@ var verify = {
     }
   },
   // 附件校验，所有附件必须上传成功才能提交
-  attachment: function attachment(_rule, value, callback) {
+  attachment(_rule, value, callback) {
     var lock = true;
     value.forEach(function (item) {
       if (item.fileState !== undefined) {
@@ -84,15 +84,23 @@ var verify = {
       return callback(new Error('文件上传中，请稍后'));
     }
   },
-  price: function price(_rule, value, callback) {
-    var reg = /^((-)?([1-9]\d*(\.\d{1,2})?)|((0)|((-)?0(\.(([1-9][0-9]?)|(0[1-9]))))))$/;
-    if (!value || reg.test(value)) {
-      callback();
-    } else {
-      return callback(new Error("金额不合法！"));
-    }
+  price(_rule, value, callback) {
+      var reg = /^((-)?([1-9]\d*(\.\d{1,2})?)|((0)|((-)?0(\.(([1-9][0-9]?)|(0[1-9]))))))$/;
+      if ((!value || reg.test(value) && value < 99999999999.99)) {
+          callback();
+      } else {
+          return callback(new Error("金额不合法,金额整数位不能超过11位"));
+      }
   },
-  positiveFloat: function positiveFloat(_rule, value, callback) {
+  area(_rule, value, callback) {
+      var reg = /^((-)?([1-9]\d*(\.\d{1,2})?)|((0)|((-)?0(\.(([1-9][0-9]?)|(0[1-9]))))))$/;
+      if ((!value || reg.test(value) && value < 999999.99)) {
+          callback();
+      } else {
+          return callback(new Error("面积不合法,面积整数位不能超过6位"));
+      }
+  },
+  positiveFloat(_rule, value, callback){
     var reg = /^(([1-9]\d*(\.\d{1,2})?)|(0(\.(([1-9][0-9]?)|(0[1-9])))?))$/;
     if (!value|| reg.test(value)) {
       callback();
@@ -100,7 +108,7 @@ var verify = {
       return callback(new Error("正小数不合法！"));
     }
   },
-  bankCard: function bankCard(_rule, value, callback) {
+  bankCard(_rule, value, callback) {
     var reg = /^[a-zA-Z0-9\*]{12,19}$/;
     if (!value || reg.test(value)) {
       callback();
@@ -108,7 +116,7 @@ var verify = {
       return callback(new Error('请输入12-19位银行卡号'));
     }
   },
-  telePhone: function telePhone(_rule, value, callback) {
+  telePhone(_rule, value, callback) {
     if (!value || value.length >= 7 && value.length <= 20) {
       callback();
     } else {
