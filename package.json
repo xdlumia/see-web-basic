@@ -1,7 +1,7 @@
 {
   "name": "see-web-basic",
   "description": "see-web-basic project",
-  "version": "1.2.27",
+  "version": "1.2.28-beta2",
   "author": "yanchao",
   "license": "MIT",
   "main": "dist/index.js",
