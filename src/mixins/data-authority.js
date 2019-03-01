@@ -11,7 +11,7 @@ function checkDataPermission(code, fieldName, type) {
     if (dataAuth.code === code) {
       for(let setting of dataAuth[type] || []) {
         if (setting.fieldCode === fieldName) {
-          return true
+          return type === 'rowSettingList' || setting.type === 1
         }
       }
     }
