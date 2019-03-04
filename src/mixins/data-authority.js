@@ -4,29 +4,22 @@
  *
  **/
 
-function checkDataPermission(code, fieldName, type) {
-  let dataAuthList = this.$local.fetch('dataAuthList') || []
-
-  for(let dataAuth of dataAuthList) {
-    if (dataAuth.code === code) {
-      for(let setting of dataAuth[type] || []) {
-        if (setting.fieldCode === fieldName) {
-          return type === 'rowSettingList' || setting.type === 1
-        }
-      }
-    }
-  }
-
-  return false
-}
-
 export default {
   methods: {
     checkColumnDataPermission(code, fieldName) {
-      return checkDataPermission.call(this, code, fieldName, 'colSetting')
-    },
-    checkRowDataPermission(code, fieldName) {
-      return checkDataPermission.call(this, code, fieldName, 'rowSettingList')
+      let dataAuthList = this.$local.fetch('dataAuthList') || []
+
+      for(let dataAuth of dataAuthList) {
+        if (dataAuth.code === code) {
+          for(let setting of dataAuth[type] || []) {
+            if (setting.fieldCode === fieldName && setting.type === 1) {
+              return true
+            }
+          }
+        }
+      }
+
+      return false
     }
   }
 }
