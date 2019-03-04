@@ -11,7 +11,7 @@ export default {
 
       for(let dataAuth of dataAuthList) {
         if (dataAuth.code === code) {
-          for(let setting of dataAuth[type] || []) {
+          for(let setting of dataAuth.colSetting || []) {
             if (setting.fieldCode === fieldName && setting.type === 1) {
               return true
             }
