@@ -22,7 +22,7 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(response => {
   const res = response.data;
   if (res.code == 402) {
-    if(router.currentRoute.fullPath != '/login'){
+    if(window.router && router.currentRoute.fullPath != '/login'){
       localStorage.loginRedirect = router.currentRoute.fullPath
     }
     // TODO: 换个方式
