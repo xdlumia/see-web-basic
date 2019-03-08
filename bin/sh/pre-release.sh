@@ -19,4 +19,5 @@ fi
 echo 'No conflicts.' >&2;
 
 git checkout master
+git pull
 git merge dev

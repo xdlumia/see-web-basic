@@ -31,13 +31,14 @@
             :closable="isEdit || !storeSelectedEmployees.includes(tag) "
             @close="handleCloseTag(tag)"
             type="primary">
-            {{tag.split(',')[0]}}
+            {{tag.split(separator)[0]}}
           </el-tag>
         </el-header>
         <el-main class="p10">
           <el-container>
             <el-aside style="width:250px; height:400px;">
               <el-tree
+				v-loading="loadingDept"
                 :data="deptTreeList"
                 :props="{label: 'deptName'}"
                 ref="tree"
@@ -66,8 +67,8 @@
                     <component size="mini" :disabled="!(isEdit || !storeSelectedEmployees.includes(employee))"
                                :is="multiple ? 'el-checkbox-button' : 'el-radio-button'"
                                v-for="employee in employeeList"
-                               :label=" employee.employeeName + ',' + employee.id + ',' + employee.userId"
-                               :key="employee.id ">
+                               :label=" employee.employeeName + separator + employee.id + separator + employee.userId"
+                               :key="employee.userId">
                       {{employee.employeeName}}
                     </component>
                   </component>
@@ -106,58 +107,67 @@
     },
     data() {
       return {
-        loadingEmployees: false,
+	    separator: ',',  //拼接分隔符，之所以拼接，是因为checkbox选择项取得label值，只有id或者名字使用起来特别不方便
+        loadingDept: false, //部门加载标识
+        loadingEmployees: false, //人员加载标识
+        deptLoaded: false, //部门是否加载完成
         visible: false,
         deptTreeList: [],
-        employeeList: [],
-        storedEmployeeList: [],
+        employeeList: [],  // 当前部门下所有人员列表（过滤）
+        storedEmployeeList: [], // 当前部门下所有人员列表
         employeeFilter: '',
-        partSelectedEmployees: this.multiple ? [] : '',
-        storeSelectedEmployees: [],
+        partSelectedEmployees: this.multiple ? [] : '',  //当前选择人员列表
+        storeSelectedEmployees: [], //已选择人员列表
       };
     },
     computed: {},
     created() {
-      this.getDeptList()
     },
     methods: {
       getDeptList() {
-        // deptTreeList 如果没有数据才加载,否则不加载
-        // if(this.deptTreeList.length==0){}
+        if (this.deptLoaded || this.loadingDept) {
+          return
+        }
+		
+		this.loadingDept = true
         this.$api.bizSystemService.getDeptList({type: 0})
           .then(res => {
             if (res.code === 200) {
+              this.deptLoaded = true
+
               let data = res.data || [];
               this.deptTreeList = data
-              // this.$store.commit('chosenDeptTreeList',data)
               if (data.length) {
                 this.$nextTick(() => {
-                  // this.$refs.tree.setCurrentKey(this.deptTreeList[0].id)
                   this.deptChanged(this.deptTreeList[0]);
                 });
               }
             }
-          })
+          }).finally(() => {
+          this.loadingDept = false
+        })
       },
       initData: function () {
+        this.getDeptList()
+
         if (this.multiple) {
           this.storeSelectedEmployees = []
           this.partSelectedEmployees = [];
           for (let item of this.value) {
-            if (item.id && item.employeeName) {
-              this.partSelectedEmployees.push(item.employeeName + ',' + item.id + ',' + item.userId);
-              this.storeSelectedEmployees.push(item.employeeName + ',' + item.id + ',' + item.userId);
+            if (item.userId && item.employeeName) {
+              this.partSelectedEmployees.push(item.employeeName + this.separator + item.id + this.separator + item.userId);
+              this.storeSelectedEmployees.push(item.employeeName + this.separator + item.id + this.separator + item.userId);
             }
           }
         } else {
-          this.partSelectedEmployees = !this.value ? '' : (this.value.employeeName + ',' + this.value.id + ',' + this.value.userId);
+          this.partSelectedEmployees = !this.value ? '' : (this.value.employeeName + this.separator + item.id + this.separator + this.value.userId);
         }
       },
       deptChanged: function (dept) {
         this.employeeFilter = '';
         this.loadingEmployees = true;
 
-        this.$api.bizSystemService.getEmployeePop({deptId: dept.id}).then(res => {
+        this.$api.bizSystemService.getEmployeesUserByDeptId({deptId: dept.id}).then(res => {
           this.employeeList = this.storedEmployeeList = res.data
         }).finally(() => {
           this.loadingEmployees = false;
@@ -180,15 +190,15 @@
       },
       saveAndClose: function () {
         this.visible = false;
-
+		
         let toObj = (e) => {
           if (!e) {
             return {};
           }
-          let [employeeName, id, userId] = e.split(',');
+          let [employeeName, id, userId] = e.split(this.separator);
           return {
             employeeName,
-            id,
+			id,
             userId
           }
         };
@@ -216,52 +226,43 @@
         min-height: 200px
       }
     }
-  }
-</style>
-<style>
-  /*
-  * 改变el-radio,el-checkbox的显示样式，因为el-radio-button等元素是在子元素中，所以style不能加scoped
-  **/
-  .employees-chosen .label-select .el-radio-button,
-  .employees-chosen .label-select .el-checkbox-button {
-    margin: 2px;
-    padding: 5px;
-  }
 
-  .employees-chosen .label-select .el-radio-button.is-active,
-  .employees-chosen .label-select .el-checkbox-button.is-checked {
-    color: #409EFF;
-    background: #f9f9f9;
-  }
+    /deep/
+     .label-select {
+      .el-radio-button, .el-checkbox-button {
+        margin: 2px;
+        padding: 5px;
+      }
 
-  .employees-chosen .label-select .el-radio-button:hover,
-  .employees-chosen .label-select .el-checkbox-button:hover {
-    background: #f3f3f3;
-  }
+      .el-radio-button.is-active, .el-checkbox-button.is-checked {
+        color: #409EFF;
+        background: #f9f9f9;
+      }
 
-  .employees-chosen .label-select .el-checkbox-button .el-checkbox-button__inner,
-  .employees-chosen .label-select .el-radio-button .el-radio-button__inner {
-    text-align: left;
-    background-color: transparent;
-    color: #409EFF;
-    box-shadow: none;
-    border: 0;
-  }
+      .el-radio-button:hover,  .el-checkbox-button:hover {
+        background: #f3f3f3;
+      }
 
-  .employees-chosen .label-select .el-radio-button,
-  .employees-chosen .label-select .el-checkbox-button,
-  .employees-chosen .label-select .el-checkbox-button__inner,
-  .employees-chosen .label-select .el-radio-button__inner {
-    width: 100%;
-  }
+      .el-checkbox-button .el-checkbox-button__inner,.el-radio-button .el-radio-button__inner {
+        text-align: left;
+        background-color: transparent;
+        color: #409EFF;
+        box-shadow: none;
+        border: 0;
+      }
 
-  .employees-chosen .label-select .el-checkbox-button.is-checked .el-checkbox-button__inner:before,
-  .employees-chosen .label-select .el-radio-button.is-active .el-radio-button__inner:before {
-    content: "\E611";
-    position: absolute;
-    right: 20px;
-    display: inline-block;
-    vertical-align: middle;
-    font-family: element-icons !important;
+      .el-radio-button, .el-checkbox-button, .el-checkbox-button__inner, .el-radio-button__inner {
+        width: 100%;
+      }
+
+      .el-checkbox-button.is-checked .el-checkbox-button__inner:before, .el-radio-button.is-active .el-radio-button__inner:before {
+        content: "\E611";
+        position: absolute;
+        right: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        font-family: element-icons !important;
+      }
+    }
   }
 </style>
