@@ -1,6 +1,6 @@
 /**
  * @author web-闫超
- * @date 2018年10月18日
+ * @date 2018年10月19日
   这里的组件是常用组件，直接在VUE中注册，使用时不需要导入
  **/
 import dSelect from './d-select';
