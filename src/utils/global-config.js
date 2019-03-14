@@ -10,6 +10,7 @@ import api from '../api'
 import filters from './filters.js'
 import local from './localStorage.js'
 import dictionary from './dictionary'
+import directives from './directives'
 import components from '../components'
 import buttonAuthority from './button-authority'
 
@@ -19,6 +20,7 @@ export default {
     vm.prototype.$local = local
 
     vm.mixin(dictionary)
+    vm.mixin(directives)
     vm.mixin(components)
     vm.mixin(buttonAuthority)
     vm.mixin({
