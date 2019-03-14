@@ -9,6 +9,7 @@ import sidePopup from './side-popup';
 import employeesChosen from './employees-chosen';
 import employeesSelect from './employees-select';
 import viewPic from './view-pic';
+import formCard from './form-card';
 
 export default {
   components: {
@@ -18,5 +19,6 @@ export default {
     employeesSelect: employeesSelect,
     employeesChosen: employeesChosen,
     viewPic: viewPic,
+    formCard: formCard,
   }
 };
