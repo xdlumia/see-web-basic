@@ -116,7 +116,7 @@ var verify = {
       return callback(new Error('请输入12-19位银行卡号'));
     }
   },
-  telePhone(_rule, value, callback) {
+  zipCode(_rule, value, callback) {
     var reg = /^[0-9]{6}$/;
     if (!value|| reg.test(value)) {
       callback();
@@ -125,7 +125,7 @@ var verify = {
     }
   },
   // 邮编验证
-  zipCode(_rule, value, callback) {
+  telePhone(_rule, value, callback) {
     if (!value || value.length >= 7 && value.length <= 20) {
       callback();
     } else {
