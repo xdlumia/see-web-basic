@@ -54,6 +54,7 @@
     import Fingerprint2 from 'fingerprintjs2'
     import moment from 'moment' // 日期格式化
     import { Base64 } from 'js-base64';
+    let lockScreenOutTime  = window.g.lockScreenOutTime
     moment.locale('zh-cn')
     export default {
         name: "app",
@@ -74,7 +75,7 @@
                 },
                 isLockScreen:false, //是否锁屏
                 isLogin:false, // 是否登录
-                outTime:0.1, // 不操作锁屏时间 /分钟
+                outTime:lockScreenOutTime || 5, // 不操作锁屏时间 /分钟
                 currentTime:'',
                 currentDate:'',
                 errotTips:'', //登陆错误提示
@@ -219,10 +220,10 @@
             },
             // 退出
             logout(){
-                // this.$api.systemService.logout()
-                // .then(res=>{
-                //     // console.log('退出登录成功')
-                // })
+                this.$api.systemService.logout()
+                .then(res=>{
+                    // console.log('退出登录成功')
+                })
             }
         },
     };
