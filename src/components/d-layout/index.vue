@@ -31,7 +31,7 @@
             </div>
             <div class="lock-login-box" :class="{active:isLogin}">
                 <div class="login-logo">
-                    <img :src="logo" alt="">
+                    <slot name="logo"></slot>
                     <p>{{loginForm.account | hidePhone}}</p>
                 </div>
                 <el-input v-model="encodePassword" ref="loginInput" size="small" type="password" @keyup.native.13="submitLogin()" placeholder="请输入密码"></el-input>
@@ -61,7 +61,6 @@
         components: {},
         data() {
             return {
-                logo:'@/assets/img/alogo.svg',
                 loginForm: {
                     account: '',
                     pwd: '',
@@ -136,16 +135,6 @@
                 let userInfo = this.$local.fetch('userInfo')
                 this.loginForm.account = userInfo.account
                 this.loginForm.syscode = userInfo.syscode
-                // 获取logo
-                if(userInfo.syscode=='asysbusiness'){
-                    this.logo = '@/assets/img/alogo.svg'
-                }else if(userInfo.syscode=='asysbusiness'){
-                    this.logo = '@/assets/img/blogo.svg'
-                }else if(userInfo.syscode=='training'){
-                    this.logo = '@/assets/img/logo_img.png'
-                }else if(userInfo.syscode=='decorate'){
-                    this.logo = '@/assets/img/alogo.svg'
-                }
             },
             // 版本更新提醒
             versionRemind() {
