@@ -159,8 +159,11 @@
                     if (outTimeKeeping == this.outTime * 60  && !this.isLockScreen) {
                       // 锁屏
                        this.isLockScreen = true
-                       //  退出登陆
-                       this.logout()
+                       //  退出条件触发两秒后再退出登录
+                       setTimeout(()=>{
+                           this.logout()
+                       },2000);
+                       
                        this.loginForm.pwd = ''
                     }
                     // 如果当前是锁屏并且是登录界面 20秒后无操作后重新锁定
