@@ -31,7 +31,7 @@
             </div>
             <div class="lock-login-box" :class="{active:isLogin}">
                 <div class="login-logo">
-                    <img src="@/assets/img/alogo.svg" alt="">
+                    <img :src="logo" alt="">
                     <p>{{loginForm.account | hidePhone}}</p>
                 </div>
                 <el-input v-model="encodePassword" ref="loginInput" size="small" type="password" @keyup.native.13="submitLogin()" placeholder="请输入密码"></el-input>
@@ -61,6 +61,7 @@
         components: {},
         data() {
             return {
+                logo:'@/assets/img/alogo.svg',
                 loginForm: {
                     account: '',
                     pwd: '',
@@ -135,6 +136,16 @@
                 let userInfo = this.$local.fetch('userInfo')
                 this.loginForm.account = userInfo.account
                 this.loginForm.syscode = userInfo.syscode
+                // 获取logo
+                if(userInfo.syscode=='asysbusiness'){
+                    this.logo = '@/assets/img/alogo.svg'
+                }else if(userInfo.syscode=='asysbusiness'){
+                    this.logo = '@/assets/img/blogo.svg'
+                }else if(userInfo.syscode=='training'){
+                    this.logo = '@/assets/img/logo_img.png'
+                }else if(userInfo.syscode=='decorate'){
+                    this.logo = '@/assets/img/alogo.svg'
+                }
             },
             // 版本更新提醒
             versionRemind() {
@@ -161,11 +172,13 @@
                        this.isLockScreen = true
                        //  退出登陆
                        this.logout()
+                       this.loginForm.pwd = ''
                     }
                     // 如果当前是锁屏并且是登录界面 20秒后无操作后重新锁定
                     if (outTimeKeeping == 20 && this.isLockScreen && this.isLogin) {
                       // 锁屏
                        this.isLogin = false
+                       this.loginForm.pwd = ''
                     }
                 }, 1000);
                 //监听鼠标
