@@ -10,6 +10,7 @@ import employeesChosen from './employees-chosen';
 import employeesSelect from './employees-select';
 import viewPic from './view-pic';
 import formCard from './form-card';
+import dLayout from './d-layout';
 
 export default {
   components: {
@@ -20,5 +21,6 @@ export default {
     employeesChosen: employeesChosen,
     viewPic: viewPic,
     formCard: formCard,
+    dLayout:dLayout
   }
 };
