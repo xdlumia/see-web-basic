@@ -24,12 +24,12 @@
             </div>
         </el-dialog>
         <div class="lock-screen lock-screen-bg" :class="{show:isLockScreen,active:isLogin}"></div>
-        <div class="lock-screen lock-screen-main" v-show="isLockScreen">
+        <el-col class="lock-screen lock-screen-main" v-show="isLockScreen">
             <div class="lock-current-time" :class="{active:isLogin}">
                 <time class="lock-time">{{currentTime}}</time>
                 <p class="lock-date">{{currentDate}}</p>
             </div>
-            <div class="lock-login-box" :class="{active:isLogin}">
+            <el-col class="lock-login-box" :class="{active:isLogin}">
                 <div class="login-logo">
                     <slot name="logo"></slot>
                     <p>{{loginForm.account | hidePhone}}</p>
@@ -38,15 +38,15 @@
                 <span class="al mt5" v-if="errotTips" style="color:#fff">{{errotTips}}</span>
                 <el-row class="mt10">
                     <el-col :span="12" class="ar">
-                        <el-button size="small" class="mr5" type="primary" @click="submitLogin()">登录</el-button>
+                        <el-button size="small" style="margin-right:5px" type="primary" @click="submitLogin()">登录</el-button>
                     </el-col>
                     <el-col :span="12" class="al">
-                        <el-button size="small" class="ml5">退出</el-button>
+                        <el-button size="small" @click="logoutLogin" class="ml5">退出</el-button>
                     </el-col>
                 </el-row>
-            </div>
-        </div>
-    </div>
+            </el-col>
+        </el-col>
+    </el-col>
 </template>
 
 <script>
@@ -226,6 +226,10 @@
                 .then(res=>{
                     // console.log('退出登录成功')
                 })
+            },
+            // 退出到登录页
+            logoutLogin(){
+                this.$router.push({ path: '/login' })
             }
         },
     };
