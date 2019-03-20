@@ -24,12 +24,12 @@
             </div>
         </el-dialog>
         <div class="lock-screen lock-screen-bg" :class="{show:isLockScreen,active:isLogin}"></div>
-        <el-col class="lock-screen lock-screen-main" v-show="isLockScreen">
+        <div class="lock-screen lock-screen-main" v-show="isLockScreen">
             <div class="lock-current-time" :class="{active:isLogin}">
                 <time class="lock-time">{{currentTime}}</time>
                 <p class="lock-date">{{currentDate}}</p>
             </div>
-            <el-col class="lock-login-box" :class="{active:isLogin}">
+            <div class="lock-login-box" :class="{active:isLogin}">
                 <div class="login-logo">
                     <slot name="logo"></slot>
                     <p>{{loginForm.account | hidePhone}}</p>
@@ -44,9 +44,9 @@
                         <el-button size="small" @click="logoutLogin" class="ml5">退出</el-button>
                     </el-col>
                 </el-row>
-            </el-col>
-        </el-col>
-    </el-col>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
