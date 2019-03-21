@@ -2,16 +2,23 @@
 /**
 * @author web-王晓冬
 * @date 2019年3月21日
-*  单选调用（传入字符串）：<select-tree :treeData='departAll' v-model="string"></select-tree>
-*  多选调用（传入数组）：<select-tree :treeData='departAll' multiple v-model="returnArray"></select-tree>
+* @params value v-model 值
+* @params props 同 el-tree 组件的props
+* @params nodeKey 同 el-tree 组件的 nodeKey
+* @params defaultExpandAll 树菜单是否展开全部 默认false
+* @params multiple 同el-select 的 multiple
+* @params placeholder 同el-select 的 placeholder
+* @params size 同el-select 的 size
+*  单选调用（传入字符串）：<select-tree :data='departAll' v-model="string"></select-tree>
+*  多选调用（传入数组）：<select-tree :data='departAll' multiple v-model="returnArray"></select-tree>
 **/
 -->
 <template>
-  <el-popover placement="bottom-start" width="200" @hide="popoverHide" trigger="click" v-model="isShowSelect">
+  <el-popover placement="bottom-start" width="200" trigger="click" v-model="isShowSelect">
     <el-tree
       style="height:300px;overflow-y: scroll;"
       v-if="isShowSelect"
-      :data="treeData"
+      :data="data"
       :check-strictly="true"
       :node-key="nodeKey"
       :show-checkbox="multiple"
@@ -22,17 +29,19 @@
       highlight-current
       @node-click="handleNodeClick"
       @check="getKeys"
-      :props="defaultProps"
+      :props="props"
     ></el-tree>
-    <el-select slot="reference" ref="select"  v-model="key" size="small" :clearable="true" :multiple="multiple" :placeholder="tipText" @click.native="isShowSelect = !isShowSelect">
-      <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+    <el-select slot="reference" ref="select"  v-model="modelValue" :size="size" :value-key="nodeKey" :clearable="true" :multiple="multiple" :placeholder="placeholder">
+      <el-option v-for="(item,index) in options" :key="index" :label="item[props.label]" :value="item[nodeKey]"></el-option>
     </el-select>
   </el-popover>
 </template>
 <script>
 export default {
   props: {
-    treeData: { type: Array, required: true },
+    value:{ required: true },
+    data: { type: Array, required: true },
+    props:{},
     defaultExpandAll: {
       type: Boolean,
       default: false
@@ -41,22 +50,17 @@ export default {
       type: Boolean,
       default: false
     },
+    size:{type: String,default: 'small'},
     nodeKey: { type: String, default: 'id' },
-    tipText: { type: String, default: '请选择' }
+    placeholder: { type: String, default: '请选择' }
   },
   data () {
     return {
       // 是否显示树状选择器
       isShowSelect: false,
       options: [],
-      key: [],
-      showValueTmp: '',
       defaultExpandedKeys: [],
       defaultCheckedKeys: [],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
     }
   },
   watch: {
@@ -64,69 +68,62 @@ export default {
       // 隐藏select自带的下拉框
       this.$refs.select.blur()
       if (val) {
-        // 下拉面板展开-选中节点-展开节点
-        this.setTreeCheckNode(this.key)
-        this.defaultCheckedKeys = this.key
-        this.defaultExpandedKeys = this.key
+        this.defaultCheckedKeys = this.multiple?this.value:[this.value]
+        this.defaultExpandedKeys = this.multiple?this.value:[this.value]
       }
     },
-    key (val) {
-      if (this.multiple) {
-        this.$emit('update:id', this.key)
-      } else {
-        this.$emit('update:id', this.key[0])
-      }
+    data(treeData){
+        this.findTreeNode(treeData,this.value)
     }
+    
   },
   mounted () {
-    // 把传进来的参数转成数组处理
-    if (this.multiple && Array.isArray(this.id)) {
-      this.key = this.id
-    } else {
-      this.key.push(this.id)
+  },
+  computed:{
+    modelValue:{
+      get(){
+        return this.value
+      },
+      set(val){
+        this.$emit('input',val)
+      },
     }
-    this.setTreeCheckNode(this.key)
   },
   methods: {
     handleNodeClick (data) {
       if (!this.multiple) {
-        let tmpMap = {}
-        tmpMap.value = data.id
-        tmpMap.label = data.label
-        this.options = []
-        this.options.push(tmpMap)
-        this.key = [data.id]
+        this.options = [data]
+        this.$emit('input',data[this.nodeKey])
         this.isShowSelect = !this.isShowSelect
       }
     },
+    // 点击多选框选中
     getKeys (data, checked) {
-      let tmp = []
-      checked.checkedNodes.forEach(node => {
-        let tmpMap = {}
-        tmpMap.value = node.id
-        tmpMap.label = node.label
-        tmp.push(tmpMap)
-      })
-      this.options = tmp
-      this.key = checked.checkedKeys
-    },
-    setTreeCheckNode (ids) {
-      let tmp = []
-      ids.forEach(id => {
-        this.findTreeNode(this.treeData, id)
-        tmp.push(this.showValueTmp)
-      })
+      this.options = checked.checkedNodes
+      this.$emit('input',this.options.map(item=>item.id))
     },
     // 递归查询树形节点
-    findTreeNode (tree, id) {
-      if ((!validatenull(tree)) && (!validatenull(id))) {
-        for (var i = 0; i < tree.length; i++) {
-          if (tree[i].id === id) {
-            this.showValueTmp = tree[i].label
-          } else if (tree[i].children != null && tree[i].children.length > 0) {
-            this.findTreeNode(tree[i].children, id)
+    findTreeNode (tree, val) {
+      if (this.value || (this.value || []).length) {
+        if(this.multiple){
+          for (var i = 0; i < tree.length; i++) {
+            if (val.includes(tree[i][this.nodeKey])) {
+              this.options.push(tree[i])
+            } else if ((tree[i].children || []).length) {
+              this.findTreeNode(tree[i].children, val)
+            }
+          }
+        }else{
+          for (var i = 0; i < tree.length; i++) {
+            if (tree[i][this.nodeKey] == val) {
+              this.options = [tree[i]]
+              break;
+            } else if ((tree[i].children || []).length) {
+              this.findTreeNode(tree[i].children, val)
+            }
           }
         }
+        
       }
     }
   }
