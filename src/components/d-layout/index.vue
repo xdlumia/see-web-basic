@@ -174,7 +174,7 @@
                     }
                 }, 1000);
                 //监听鼠标
-                document.onclick = () => {
+                document.onmousemove = () => {
                         //如果操作键盘 清空记时
                         outTimeKeeping = 0; 
                         // 如果当前是锁屏 并且没有登录框的时候 操作键盘出现登录框
