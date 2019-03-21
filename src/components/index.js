@@ -11,6 +11,7 @@ import employeesSelect from './employees-select';
 import viewPic from './view-pic';
 import formCard from './form-card';
 import dLayout from './d-layout';
+import treeSelect from './tree-select';
 
 export default {
   components: {
@@ -21,6 +22,7 @@ export default {
     employeesChosen: employeesChosen,
     viewPic: viewPic,
     formCard: formCard,
-    dLayout:dLayout
+    dLayout:dLayout,
+    treeSelect:treeSelect
   }
 };
