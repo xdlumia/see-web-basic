@@ -35,7 +35,7 @@
                     <p>{{loginForm.account | hidePhone}}</p>
                 </div>
                 <el-input v-model="encodePassword" ref="loginInput" size="small" type="password" @keyup.native.13="submitLogin()" placeholder="请输入密码"></el-input>
-                <span class="al mt5" v-if="errotTips" style="color:#fff">{{errotTips}}</span>
+                <span v-if="errotTips" style="color:#fff">{{errotTips}}</span>
                 <el-row class="mt10">
                     <el-col :span="12" class="ar">
                         <el-button size="small" style="margin-right:5px" type="primary" @click="submitLogin()">登录</el-button>
