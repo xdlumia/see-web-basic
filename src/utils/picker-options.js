@@ -68,7 +68,7 @@ const pickerOptionsRange = {
     }
   }]
 }
-const pickerOptionsAfter = {
+const dateOptionsAfter = {
   shortcuts: [{
     text: '后一周',
     onClick(picker) {
@@ -180,7 +180,8 @@ const pickerOptionsAfter = {
 
 export {
   pickerOptionsMoment,
-  pickerOptionsRange
+  pickerOptionsRange,
+  dateOptionsAfter
 }
 // 全局装入
 // export default {
