@@ -68,6 +68,41 @@ const pickerOptionsRange = {
     }
   }]
 }
+const pickerOptionsAfter = {
+  shortcuts: [{
+    text: '后一周',
+    onClick(picker) {
+      const end = new Date();
+      const start = new Date();
+      start.setTime(start.getTime() + 3600 * 1000 * 24 * 7);
+      picker.$emit('pick', [start, end]);
+    }
+  },{
+    text: '后两周',
+    onClick(picker) {
+      const end = new Date();
+      const start = new Date();
+      start.setTime(start.getTime() + 3600 * 1000 * 24 * 7);
+      picker.$emit('pick', [start, end]);
+    }
+  }, {
+    text: '后一个月',
+    onClick(picker) {
+      const end = new Date();
+      const start = new Date();
+      start.setTime(start.getTime() + 3600 * 1000 * 24 * 30);
+      picker.$emit('pick', [start, end]);
+    }
+  }, {
+    text: '后两个月',
+    onClick(picker) {
+      const end = new Date();
+      const start = new Date();
+      start.setTime(start.getTime() + 3600 * 1000 * 24 * 90);
+      picker.$emit('pick', [start, end]);
+    }
+  }]
+}
 
  /*
     @desc 公共日期的某一时刻

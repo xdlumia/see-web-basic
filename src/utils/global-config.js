@@ -13,14 +13,14 @@ import dictionary from './dictionary';
 import directives from './directives';
 import components from '../components';
 import buttonAuthority from './button-authority';
-import {pickerOptionsMoment,pickerOptionsRange} from './picker-options';
-console.log(buttonAuthority)
+import {pickerOptionsMoment,pickerOptionsRange,dateOptionsAfter} from './picker-options';
 export default {
   install: function install(vm) {
     vm.prototype.$api = api;
     vm.prototype.$local = local;
     vm.prototype.$pickerOptionsMoment = pickerOptionsMoment;
     vm.prototype.$pickerOptionsRange = pickerOptionsRange;
+    vm.prototype.$dateOptionsAfter = dateOptionsAfter;
 
     vm.mixin(dictionary);
     vm.mixin(directives);
