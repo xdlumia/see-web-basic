@@ -74,7 +74,7 @@
                 },
                 isLockScreen:false, //是否锁屏
                 isLogin:false, // 是否登录
-                outTime:lockScreenOutTime || 5, // 不操作锁屏时间 /分钟
+                outTime:lockScreenOutTime || 15, // 不操作锁屏时间 /分钟
                 currentTime:'',
                 currentDate:'',
                 errotTips:'', //登陆错误提示
