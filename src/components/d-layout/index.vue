@@ -50,7 +50,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import Fingerprint2 from 'fingerprintjs2'
     import moment from 'moment' // 日期格式化
     import { Base64 } from 'js-base64';
@@ -223,7 +222,6 @@
                 .then(res=>{
                     let token = res.data.token || ''
                     localStorage.token = token
-                    axios.defaults.headers.token = localStorage.token
                     this.isLogin = false
                     this.isLockScreen = false
                 })

@@ -72,8 +72,14 @@ export default {
         this.defaultExpandedKeys = this.multiple?this.value:[this.value]
       }
     },
-    data(treeData){
-        this.findTreeNode(treeData,this.value)
+    value(val){
+      this.findTreeNode(this.data,val)
+    },
+    data:{
+      handler:function(data){
+        this.findTreeNode(data,this.value)
+      },
+      deep:true
     }
     
   },
