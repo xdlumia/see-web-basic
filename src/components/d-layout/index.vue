@@ -150,24 +150,33 @@
             },
             // 监控键鼠
             watchMouseKey(){
-                var outTimeKeeping = 0;
+                // 存储当前时间
+                localStorage.setItem("lockScreenTime", new Date().getTime());
                 window.setInterval(()=>{
-                    // 获取最新时间
+                    // 获取最新时间 锁屏显示调用
                     this.getCurrentTime()
-                    outTimeKeeping++;
-                    // 超过设置时间无操作 并且当前没有锁屏的情况下锁屏
-                    if (outTimeKeeping == this.outTime * 60  && !this.isLockScreen) {
+
+                    // 获取当前时间戳
+                    let currentTime = new Date().getTime()
+                    // 获取上次操作之后存储的时间
+                    let localTime = localStorage.lockScreenTime
+                    /**
+                     * 当(当前时间 - 上次操作的时间)  = 设置的锁屏时间 
+                     * 并且当前没有锁屏的情况下锁屏
+                     */
+                    if ((currentTime - localTime) >= this.outTime * 60 * 1000  && !this.isLockScreen) {
                       // 锁屏
                        this.isLockScreen = true
                        //  退出条件触发两秒后再退出登录
                        setTimeout(()=>{
-                           this.logout()
-                       },2000);
+                           localStorage.token = ''
+                        //    this.logout()
+                       },1000);
                        
                        this.loginForm.pwd = ''
                     }
                     // 如果当前是锁屏并且是登录界面 20秒后无操作后重新锁定
-                    if (outTimeKeeping == 20 && this.isLockScreen && this.isLogin) {
+                    if ((currentTime - localTime) == 20 * 1000 && this.isLockScreen && this.isLogin) {
                       // 锁屏
                        this.isLogin = false
                        this.loginForm.pwd = ''
@@ -175,15 +184,15 @@
                 }, 1000);
                 //监听鼠标
                 document.onmousemove = () => {
-                        //如果操作键盘 清空记时
-                        outTimeKeeping = 0; 
+                        //如果操作键盘 重新记录当前时间
+                        localStorage.setItem("lockScreenTime", new Date().getTime());
                         // 如果当前是锁屏 并且没有登录框的时候 操作键盘出现登录框
                         this.showLoginBox()
                 };
                 //监听键盘
                 document.onkeydown = () => {
-                        //如果操作键盘 清空记时
-                        outTimeKeeping = 0; 
+                        //如果操作键盘 重新记录当前时间
+                        localStorage.setItem("lockScreenTime", new Date().getTime());
                         // 如果当前是锁屏 并且没有登录框的时候 操作键盘出现登录框
                         this.showLoginBox()
                         
@@ -223,7 +232,7 @@
                 })
                 
             },
-            // 退出
+            // 退出 暂未使用
             logout(){
                 this.$api.systemService.logout()
                 .then(res=>{
