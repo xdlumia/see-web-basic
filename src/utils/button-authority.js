@@ -1,13 +1,20 @@
 export default {
   computed: {
     authorityButtons() {
-      let authorityBtn = this.$local.fetch('authorityBtn')
+      let authorityBtn = this.$local.fetch('navData')
 
-      return Object.values(authorityBtn).reduce((arr, current) => {
-        arr.push.apply(arr, current)
+      let generateButtonCodes = (authorityBtn, arr) => {
+        return authorityBtn.reduce((arr, current) => {
+          arr.push.apply(arr, current.buttonsCode)
 
-        return arr
-      }, [])
+          if (current.children) {
+            generateButtonCodes(current.children, arr)
+          }
+          return arr
+        }, arr || [])
+      }
+
+      return generateButtonCodes(authorityBtn)
     }
   }
 }
