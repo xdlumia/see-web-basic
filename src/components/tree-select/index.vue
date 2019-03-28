@@ -106,7 +106,7 @@ export default {
     // 点击多选框选中
     getKeys (data, checked) {
       this.options = checked.checkedNodes
-      this.$emit('input',this.options.map(item=>item.id))
+      this.$emit('input',this.options.map(item=>item[this.nodeKey]))
     },
     // 递归查询树形节点
     findTreeNode (tree, val) {

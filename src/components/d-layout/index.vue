@@ -263,7 +263,7 @@
     .lock-screen-bg{ 
         background: url('http://area.sinaapp.com/bingImg/') no-repeat; 
         background-size: cover;
-        z-index: 99998; 
+        z-index: 9998; 
         // visibility: hidden;
         // opacity: 0;
         // transition:.2s;
@@ -272,12 +272,12 @@
     //     visibility: visible;
     //     opacity: 1;
     // }
-    .lock-screen-bg.active{
-        // filter: blur(6px);
-    }
+    // .lock-screen-bg.active{
+    //     filter: blur(6px);
+    // }
     .lock-screen-main{ 
         background:rgba(0,0,0,.5);
-        z-index: 99999;
+        z-index: 9999;
         text-align: center;
         .lock-current-time{ 
             top:20%; position:relative; 
