@@ -4,7 +4,7 @@
 * @date 2019年3月21日
 * @params value v-model 值
 * @params props 同 el-tree 组件的props
-* @params nodeKey 同 el-tree 组件的 nodeKey
+* @params node-key 同 el-tree 组件的 node-key
 * @params defaultExpandAll 树菜单是否展开全部 默认false
 * @params multiple 同el-select 的 multiple
 * @params placeholder 同el-select 的 placeholder
@@ -15,6 +15,7 @@
 -->
 <template>
   <el-popover placement="bottom-start" width="200" trigger="click" v-model="isShowSelect">
+    11{{options.length}}
     <el-tree
       style="height:300px;overflow-y: scroll;"
       v-if="isShowSelect"
@@ -88,6 +89,7 @@ export default {
   computed:{
     modelValue:{
       get(){
+        this.findTreeNode(this.data,this.value)
         return this.value
       },
       set(val){
@@ -112,24 +114,24 @@ export default {
     findTreeNode (tree, val) {
       if (this.value || (this.value || []).length) {
         if(this.multiple){
-          for (var i = 0; i < tree.length; i++) {
-            if (val.includes(tree[i][this.nodeKey])) {
-              this.options.push(tree[i])
-            } else if ((tree[i].children || []).length) {
-              this.findTreeNode(tree[i].children, val)
+          tree.forEach(item=>{
+            if(val.includes(item[this.nodeKey])){
+              this.options.push(item)
             }
-          }
+            if((item[this.props.children || 'children'] || []).length){
+              this.findTreeNode(item[this.props.children || 'children'], val)
+            }
+          })
         }else{
           for (var i = 0; i < tree.length; i++) {
             if (tree[i][this.nodeKey] == val) {
               this.options = [tree[i]]
               break;
-            } else if ((tree[i].children || []).length) {
-              this.findTreeNode(tree[i].children, val)
+            } else if ((tree[i][this.props.children || 'children'] || []).length) {
+              this.findTreeNode(tree[i][this.props.children || 'children'], val)
             }
           }
         }
-        
       }
     }
   }
