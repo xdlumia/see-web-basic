@@ -15,7 +15,6 @@
 -->
 <template>
   <el-popover placement="bottom-start" width="200" trigger="click" v-model="isShowSelect">
-    11{{options.length}}
     <el-tree
       style="height:300px;overflow-y: scroll;"
       v-if="isShowSelect"
