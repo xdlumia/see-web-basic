@@ -3,11 +3,14 @@
 * @author web-王晓冬
 * @date 2019年3月21日
 * @params value v-model 值
+* @param api {String}                  ---api接口 微服务名称.url方法名称  必填
+* @param params {Object}               ---接口参数;  默认{ page: 1, limit: 15 }
 * @params props 同 el-tree 组件的props
 * @params node-key 同 el-tree 组件的 node-key
 * @params defaultExpandAll 树菜单是否展开全部 默认false
 * @params multiple 同el-select 的 multiple
 * @params placeholder 同el-select 的 placeholder
+* @params collapse-tags 同el-select 的 collapse-tags
 * @params size 同el-select 的 size
 *  单选调用（传入字符串）：<select-tree :data='departAll' v-model="string"></select-tree>
 *  多选调用（传入数组）：<select-tree :data='departAll' multiple v-model="returnArray"></select-tree>
@@ -16,9 +19,10 @@
 <template>
   <el-popover placement="bottom-start" width="200" trigger="click" v-model="isShowSelect">
     <el-tree
+      v-loading="loading"
       style="height:300px;overflow-y: scroll;"
       v-if="isShowSelect"
-      :data="data"
+      :data="treeDatas"
       :check-strictly="true"
       :node-key="nodeKey"
       :show-checkbox="multiple"
@@ -31,7 +35,7 @@
       @check="getKeys"
       :props="props"
     ></el-tree>
-    <el-select slot="reference" ref="select"  v-model="modelValue" :size="size" :value-key="nodeKey" :clearable="true" :multiple="multiple" :placeholder="placeholder">
+    <el-select slot="reference" :collapse-tags="collapseTags" ref="select"  v-model="modelValue" :size="size" :value-key="nodeKey" :clearable="true" :multiple="multiple" :placeholder="placeholder">
       <el-option v-for="(item,index) in options" :key="index" :label="item[props.label]" :value="item[nodeKey]"></el-option>
     </el-select>
   </el-popover>
@@ -40,7 +44,18 @@
 export default {
   props: {
     value:{ required: true },
-    data: { type: Array, required: true },
+    data: { type: Array,},
+    //请求接口
+    api: {
+      required: false
+    },
+    params: {
+      type: [Object,String,Number],
+    },
+    collapseTags:{
+      type: Boolean,
+      default: false
+    },
     props:{},
     defaultExpandAll: {
       type: Boolean,
@@ -56,6 +71,8 @@ export default {
   },
   data () {
     return {
+      loading:false,
+      treeData:[],
       // 是否显示树状选择器
       isShowSelect: false,
       options: [],
@@ -73,7 +90,7 @@ export default {
       }
     },
     value(val){
-      this.findTreeNode(this.data,val)
+      this.findTreeNode(this.treeDatas,val)
     },
     data:{
       handler:function(data){
@@ -85,10 +102,26 @@ export default {
   },
   mounted () {
   },
+  created() {
+    if(this.api){
+      this.init(this.params);
+    }
+  },
   computed:{
+    treeDatas(){
+      return this.api?this.treeData:this.data
+    },
+    // 实时更新server
+    server(){
+      return this.api.split('.')[0]
+    },
+    // 实时更新url
+    url(){
+      return this.api.split('.')[1]
+    },
     modelValue:{
       get(){
-        this.findTreeNode(this.data,this.value)
+        this.findTreeNode(this.treeDatas,this.value)
         return this.value
       },
       set(val){
@@ -97,6 +130,18 @@ export default {
     }
   },
   methods: {
+    init(params) {
+      this.loading = true;
+      this.$api[this.server][this.url](params)
+        .then(res => {
+          this.treeData = res.data || [];
+          this.findTreeNode(this.treeData,this.value)
+        })
+        .finally(() => {
+          //关闭loading
+          this.loading = false; 
+        });
+    },
     handleNodeClick (data) {
       if (!this.multiple) {
         this.options = [data]
