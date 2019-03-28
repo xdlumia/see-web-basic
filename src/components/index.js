@@ -12,6 +12,7 @@ import viewPic from './view-pic';
 import formCard from './form-card';
 import dLayout from './d-layout';
 import treeSelect from './tree-select';
+import dutySetting from './duty-setting';
 
 export default {
   components: {
@@ -22,7 +23,8 @@ export default {
     employeesChosen: employeesChosen,
     viewPic: viewPic,
     formCard: formCard,
-    dLayout:dLayout,
-    treeSelect:treeSelect
+    dLayout: dLayout,
+    treeSelect: treeSelect,
+    dutySetting
   }
 };

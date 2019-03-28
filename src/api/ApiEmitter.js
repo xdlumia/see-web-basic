@@ -19,6 +19,11 @@ const createApi = (config, serviceName) => {
         }
 
         return function (params, ...urlParams) {
+            if (userUrlParam) {
+              if ((urlParams.length + 1) !== urls.length) {
+                throw new Error(`url: ${url} 需要 ${urls.length - 1} 个参数，实际有${urlParams.length}个`)
+              }
+            }
             let serviceUrl = ''
 
             if (!useMock) {
@@ -28,11 +33,7 @@ const createApi = (config, serviceName) => {
                     throw new Error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
                 }
 
-                if (userUrlParam) {
-                    if ((urlParams.length + 1) !== urls.length) {
-                        throw new Error(`url: ${url} 需要 ${urls.length - 1} 个参数，实际有${urlParams.length}个`)
-                    }
-                }
+
             }
 
             return Api[method](serviceUrl + (userUrlParam ? urls.reduce((previousValue, currentValue, currentIndex) => {
