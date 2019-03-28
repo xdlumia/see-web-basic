@@ -273,7 +273,7 @@
     //     opacity: 1;
     // }
     .lock-screen-bg.active{
-        filter: blur(6px);
+        // filter: blur(6px);
     }
     .lock-screen-main{ 
         background:rgba(0,0,0,.5);
