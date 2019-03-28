@@ -23,7 +23,7 @@
                 >我知道了</el-button>
             </div>
         </el-dialog>
-        <div class="lock-screen lock-screen-bg" :class="{show:isLockScreen,active:isLogin}"></div>
+        <div class="lock-screen lock-screen-bg" v-show="isLockScreen" :class="{active:isLogin}"></div>
         <div class="lock-screen lock-screen-main" v-show="isLockScreen">
             <div class="lock-current-time" :class="{active:isLogin}">
                 <time class="lock-time">{{currentTime}}</time>
@@ -50,6 +50,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import Fingerprint2 from 'fingerprintjs2'
     import moment from 'moment' // 日期格式化
     import { Base64 } from 'js-base64';
@@ -175,7 +176,7 @@
                        this.loginForm.pwd = ''
                     }
                     // 如果当前是锁屏并且是登录界面 20秒后无操作后重新锁定
-                    if ((currentTime - localTime) == 20 * 1000 && this.isLockScreen && this.isLogin) {
+                    if ((currentTime - localTime) >= 20 * 1000 && this.isLockScreen && this.isLogin) {
                       // 锁屏
                        this.isLogin = false
                        this.loginForm.pwd = ''
@@ -222,6 +223,7 @@
                 .then(res=>{
                     let token = res.data.token || ''
                     localStorage.token = token
+                    // axios.defaults.headers.token = localStorage.token
                     this.isLogin = false
                     this.isLockScreen = false
                 })
@@ -262,16 +264,16 @@
         background: url('http://area.sinaapp.com/bingImg/') no-repeat; 
         background-size: cover;
         z-index: 99998; 
-        visibility: hidden;
-        opacity: 0;
-        transition:.2s;
+        // visibility: hidden;
+        // opacity: 0;
+        // transition:.2s;
     }
-    .lock-screen-bg.show{
-        visibility: visible;
-        opacity: 1;
-    }
+    // .lock-screen-bg.show{
+    //     visibility: visible;
+    //     opacity: 1;
+    // }
     .lock-screen-bg.active{
-        filter: blur(10px);
+        filter: blur(6px);
     }
     .lock-screen-main{ 
         background:rgba(0,0,0,.5);
