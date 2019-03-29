@@ -183,7 +183,7 @@
                     }
                 }, 1000);
                 //监听鼠标
-                document.onmousemove = () => {
+                document.onclick = () => {
                         //如果操作键盘 重新记录当前时间
                         localStorage.setItem("lockScreenTime", new Date().getTime());
                         // 如果当前是锁屏 并且没有登录框的时候 操作键盘出现登录框
