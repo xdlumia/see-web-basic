@@ -111,9 +111,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .duty-dialog {
-    position: absolute;
-    right: 70px;
-    top: 14px;
     &.relative,
     &.d-relative {
         position: relative;
