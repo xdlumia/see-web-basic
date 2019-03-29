@@ -13,7 +13,7 @@
  */
 -->
 <template>
-    <div>
+    <div v-loading="isLoading">
         <div class="tabs-filter">
             <!-- 责任流程tabs -->
             <el-tabs v-model="dutyType" @tab-click="tabHandle">
@@ -32,7 +32,7 @@
                         <el-col :span="8">
                             <i class="el-icon-tickets"></i>
                             <span>楼盘列表</span>
-                            <span class="d-text-qgray">● 20</span>
+                            <span class="d-text-qgray">● {{buildingCount}}</span>
                         </el-col>
                         <el-col :span="14">
                             <el-radio-group
@@ -90,6 +90,7 @@
                                     v-if="!buildingPage.nomore"
                                     type="info"
                                     size="mini"
+                                    :loading="buildingPage.isLoading"
                                 >加载更多</el-button>
                                 <span v-if="buildingPage.nomore" class="d-text-qgray">没有更多了</span>
                             </div>
@@ -182,6 +183,7 @@ export default {
     props: ['dialogMeta'],
     data() {
         return {
+            isLoading: false, // 加载中
             dutyType: '', // 责任设置流程类型，最上tab选项
             selectedAuthTabData: {}, // 已选择责任流程
             pageAuth: [], // 责任流程
@@ -204,8 +206,10 @@ export default {
             },
             buildingDutySetting: {}, //楼盘责任人设置，缓存各个楼盘责任人设置列表
             buildingList: [], // 楼盘列表
+            buildingCount: 0, // 楼盘总数
             selectedBuildingIds: [], // 已选择楼盘 ids
             buildingPage: {
+                isLoading: false, // 是否正在加载
                 loaded: false, // 是否加载过了
                 page: 1, // 分页下一个页码
                 limit: 20, // 每页数据量
@@ -226,16 +230,15 @@ export default {
         };
     },
     computed: {},
-    created() {
-        // 如果有id查询编辑详情
-        // if (this.dialogInfo.id) {
-        //   this.getPropertyInfo(this.dialogInfo.id);
-        // }
-        this.syscode = this.dialogMeta.syscode || 'asysbusiness';
-        this.pageCode =
-            this.dialogMeta.pageCode || 'asystem_contract_bargain_1022';
+    async created() {
+        this.syscode = this.dialogMeta.syscode;
+        this.pageCode = this.dialogMeta.pageCode;
         this.module = this.dialogMeta.module;
-        this.getPageAuth();
+        this.isLoading = true;
+        try {
+            await this.getPageAuth();
+        } catch (error) {}
+        this.isLoading = false;
     },
     mounted() {},
     watch: {},
@@ -283,49 +286,56 @@ export default {
                 item => (item.isFlow && isOpenFlow) || !item.isFlow
             );
             this.pageAuth = data;
-            this.pageAuthChildren = data[0].children;
-            this.selectedAuthTabData = data[0];
-            this.dutyType = data[0].objauthName;
-            this.getBuildingList(1);
+            if (data[0]) {
+                this.pageAuthChildren = data[0].children;
+                this.selectedAuthTabData = data[0];
+                this.dutyType = data[0].objauthName;
+                await this.getBuildingList(1);
+            }
         },
         /**获取楼盘列表 */
         async getBuildingList(page) {
-            if (page) {
-                this.buildingPage.page = page;
-            }
-            let {
-                data: list,
-                count
-            } = await this.$api.seeContractDutyService.getCfgBuildingList(
-                Object.assign(
-                    {
-                        page: this.buildingPage.page,
-                        limit: this.buildingPage.limit,
-                        syscode: this.syscode,
-                        objauthCode: this.selectedAuthTabData.objauthCode,
-                        subFuncCodeList: this.pageAuthChildren.map(
-                            item => item.objauthCode
-                        )
-                    },
-                    this.queryForm
-                )
-            );
-            this.buildingPage.loaded = true;
-            // 如果是首页，直接赋值
-            // 如果是分页，合并
-            if (this.buildingPage.page == 1) {
-                this.buildingList = list;
-                this.selectedBuildingIds = [];
-                this.dutyList = {};
-            } else {
-                this.buildingList = [].concat(this.buildingList, list);
-            }
-            if (this.buildingPage.page * this.buildingPage.limit >= count) {
-                this.buildingPage.nomore = true;
-            } else {
-                this.buildingPage.nomore = false;
-                this.buildingPage.page = this.buildingPage.page + 1;
-            }
+            this.buildingPage.isLoading = true;
+            try {
+                if (page) {
+                    this.buildingPage.page = page;
+                }
+                let {
+                    data: list,
+                    count
+                } = await this.$api.seeContractDutyService.getCfgBuildingList(
+                    Object.assign(
+                        {
+                            page: this.buildingPage.page,
+                            limit: this.buildingPage.limit,
+                            syscode: this.syscode,
+                            objauthCode: this.selectedAuthTabData.objauthCode,
+                            subFuncCodeList: this.pageAuthChildren.map(
+                                item => item.objauthCode
+                            )
+                        },
+                        this.queryForm
+                    )
+                );
+                this.buildingCount = count;
+                this.buildingPage.loaded = true;
+                // 如果是首页，直接赋值
+                // 如果是分页，合并
+                if (this.buildingPage.page == 1) {
+                    this.buildingList = list;
+                    this.selectedBuildingIds = [];
+                    this.dutyList = {};
+                } else {
+                    this.buildingList = [].concat(this.buildingList, list);
+                }
+                if (this.buildingPage.page * this.buildingPage.limit >= count) {
+                    this.buildingPage.nomore = true;
+                } else {
+                    this.buildingPage.nomore = false;
+                    this.buildingPage.page = this.buildingPage.page + 1;
+                }
+            } catch (e) {}
+            this.buildingPage.isLoading = false;
         },
         // 点击责任流程点击处理函数
         tabHandle(data) {
