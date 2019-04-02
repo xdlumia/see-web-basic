@@ -45,7 +45,10 @@ axios.interceptors.response.use(response => {
     return Promise.reject(res.msg);
   }
 
-  if (res.code == 200 && (response.config.isShowMessage !== undefined ? response.config.isShowMessage : response.config.method !== 'get')) {
+  // isShowMessage 写法兼容以前
+  let showMsg = response.config.isShowMessage !== undefined ? response.config.isShowMessage :response.config.showMsg
+
+  if (res.code == 200 && (showMsg !== undefined ? showMsg : response.config.method !== 'get')) {
     Message.success({
       message: response.config.msg || res.msg,
       duration: 3000,
