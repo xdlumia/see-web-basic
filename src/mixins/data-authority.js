@@ -29,7 +29,7 @@ export default {
      * @param targetType 维度类型,比如lp, dz,默认lp
      *
      **/
-    checkAuthorityButton(buttonCode, targetId, targetType) {
+    checkAuthorityButton(buttonCode, targetId, targetType = 'lp') {
       if (!this.authorityButtons.includes(buttonCode)) {
         return false
       }
@@ -39,6 +39,7 @@ export default {
       }
 
       let temp;
+      let authorityButtonTempObj = {}; // 先不缓存了
       // TODO：考虑放到vuex中，而不是localStorage
       if (!authorityButtonTempObj.__init) {
         let dataAuthList = this.$local.fetch('bizDataAuthCfgList') || []
@@ -55,9 +56,6 @@ export default {
 
         authorityButtonTempObj.__init = true
       }
-
-      // 默认lp
-      targetType = targetType || 'lp'
 
       return !!((temp = authorityButtonTempObj[buttonCode]) && (temp.enable === false || ((temp = temp[targetType]) && temp.includes(targetId))))
     }

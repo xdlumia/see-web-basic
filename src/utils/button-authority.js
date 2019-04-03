@@ -7,6 +7,8 @@ export default {
         return authorityBtn.reduce((arr, current) => {
           arr.push.apply(arr, current.buttonsCode)
 
+          current.code && (arr.push( current.code))
+
           if (current.children) {
             generateButtonCodes(current.children, arr)
           }
