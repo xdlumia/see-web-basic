@@ -545,9 +545,39 @@ export default {
                     ]
                         .filter(item => item.funcCode != funcCode)
                         .concat(users);
+                    this.checkAssignmentStatusAfterSetting(id);
                 });
                 this.checkDutyUserSetting();
             }
+        },
+        /**设置责任人之后，检查一下分配状态 */
+        checkAssignmentStatusAfterSetting(id) {
+            let key = `${this.selectedAuthTabData.objauthCode}_${id}`;
+            let auths = [];
+            this.buildingDutySetting[key].map(item => {
+                if (item.funcCode && !auths.includes(item.funcCode)) {
+                    auths.push(item.funcCode);
+                }
+            });
+            let len = this.pageAuthChildren.filter(
+                item => !auths.includes(item.objauthCode)
+            ).length;
+            this.buildingList.some((item, index) => {
+                if (item.id == id) {
+                    switch (len) {
+                        case 0:
+                            item.assignmentStatus = 3; // 已分配
+                            break;
+                        case this.pageAuthChildren.length:
+                            item.assignmentStatus = 1; // 未分配
+                            break;
+                        default:
+                            item.assignmentStatus = 2; // 分配中
+                            break;
+                    }
+                    this.$set(this.buildingList, 0, item);
+                }
+            });
         },
         // 打开责任人子设置弹框
         setting(item) {
