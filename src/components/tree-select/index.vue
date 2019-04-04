@@ -35,7 +35,7 @@
       @check="getKeys"
       :props="props"
     ></el-tree>
-    <el-select slot="reference" :collapse-tags="collapseTags" ref="select"  v-model="modelValue" :size="size" :value-key="nodeKey" :clearable="true" :multiple="multiple" :placeholder="placeholder">
+    <el-select slot="reference" class="tree-select-box" :collapse-tags="collapseTags" ref="select"  v-model="modelValue" :size="size" :value-key="nodeKey" :clearable="true" :multiple="multiple" :placeholder="placeholder">
       <el-option v-for="(item,index) in options" :key="index" :label="item[props.label]" :value="item[nodeKey]"></el-option>
     </el-select>
   </el-popover>
@@ -181,3 +181,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.tree-select-box{
+  width: inherit;
+}
+</style>
