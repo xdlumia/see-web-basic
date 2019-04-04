@@ -34,7 +34,7 @@
                             <span>楼盘列表</span>
                             <span class="d-text-qgray">● {{buildingCount}}</span>
                         </el-col>
-                        <el-col :span="14">
+                        <el-col :span="13" class="ar">
                             <el-radio-group
                                 v-model="queryForm.assignmentStatus"
                                 @change="filter()"
@@ -45,12 +45,8 @@
                                 <!-- assignmentStatus: 分配状态: 0 全部 1 未分配  2 分配中  3 已分配   -->
                                 <el-radio-button
                                     :label="item.value"
-                                    v-for="item of [
-                                        {name:'未分配',value:1},
-                                        {name:'分配中',value:2},
-                                        {name:'已分配',value:3},
-                                    ]"
                                     :key="item.value"
+                                    v-for="item of assignmentStatusList"
                                 >
                                     <span class="d-text-green" v-if="item.value==3">●</span>
                                     <span class="d-text-orange" v-else-if="item.value==2">●</span>
@@ -59,11 +55,12 @@
                                 </el-radio-button>
                             </el-radio-group>
                         </el-col>
-                        <el-col :span="2">
+                        <el-col :span="3">
                             <dutyFilter
                                 class="contract-filter"
                                 ref="contractFilter"
                                 :params="queryForm"
+                                :assignmentStatusList="assignmentStatusList"
                                 @submit="filter()"
                             ></dutyFilter>
                         </el-col>
@@ -72,12 +69,14 @@
                     <el-row class="d-bg-white h600 mt20 d-auto-y">
                         <el-col :span="24">
                             <multiSelect
-                                v-model="selectedBuildingIds"
                                 :value="selectedBuildingIds"
                                 :list="buildingList"
+                                :max="maxSelect"
+                                v-model="selectedBuildingIds"
                                 identity="id"
-                                @change="buildingChanged"
                                 multi
+                                @change="buildingChanged"
+                                @error="maxError"
                             >
                                 <template v-slot:card="{item,selected}">
                                     <buildingCard v-if="item" :building="item" :selected="selected"></buildingCard>
@@ -97,6 +96,13 @@
                         </el-col>
                     </el-row>
                     <!-- 楼盘卡片容器结束 -->
+                    <div v-if="buildingList.length>0">
+                        <el-checkbox
+                            v-model="isChooseAllBuilding"
+                            :indeterminate="(selectedBuildingIds.length&&selectedBuildingIds.length!=buildingList.length)?true:false"
+                            @change="chooseAllChange"
+                        >全选</el-checkbox>
+                    </div>
                 </div>
             </el-col>
             <el-col :span="12" :offset="1" class="d-bg-gray hfull">
@@ -183,6 +189,8 @@ export default {
     props: ['dialogMeta'],
     data() {
         return {
+            isChooseAllBuilding: false, // 全选楼盘
+            maxSelect: 5, // 楼盘最多选择多少个
             isLoading: false, // 加载中
             dutyType: '', // 责任设置流程类型，最上tab选项
             selectedAuthTabData: {}, // 已选择责任流程
@@ -226,23 +234,43 @@ export default {
                 objectNames: [], // 已选择的楼盘名字
                 userIds: [], // 已设置用户ids
                 title: '' // 弹框标题
-            }
+            },
+            assignmentStatusList: [
+                { name: '未分配', value: 1 },
+                { name: '分配中', value: 2 },
+                { name: '已分配', value: 3 }
+            ]
         };
     },
     computed: {},
     async created() {
-        this.syscode = this.dialogMeta.syscode;
-        this.pageCode = this.dialogMeta.pageCode;
-        this.module = this.dialogMeta.module;
         this.isLoading = true;
+        this.getMeta();
         try {
             await this.getPageAuth();
         } catch (error) {}
         this.isLoading = false;
     },
     mounted() {},
-    watch: {},
+    watch: {
+        dialogMeta() {
+            if (this.dialogMeta) {
+                this.getMeta();
+            }
+        }
+    },
     methods: {
+        getMeta() {
+            this.syscode = this.dialogMeta.syscode;
+            this.pageCode = this.dialogMeta.pageCode;
+            this.module = this.dialogMeta.module;
+            if (typeof this.dialogMeta.buildingMaxSelectNum == 'undefined') {
+                this.maxSelect = 5;
+            } else {
+                this.maxSelect =
+                    parseInt(this.dialogMeta.buildingMaxSelectNum) || 0;
+            }
+        },
         /**获取流程责任权限配置信息 */
         async getAuthSettingConfig() {
             if (!window.dutyProgressConfig) {
@@ -288,6 +316,7 @@ export default {
             this.pageAuth = data;
             if (data[0]) {
                 this.pageAuthChildren = data[0].children;
+                this.resetAssignmentList();
                 this.selectedAuthTabData = data[0];
                 this.dutyType = data[0].objauthName;
                 await this.getBuildingList(1);
@@ -324,6 +353,7 @@ export default {
                 if (this.buildingPage.page == 1) {
                     this.buildingList = list;
                     this.selectedBuildingIds = [];
+                    this.isChooseAllBuilding = false;
                     this.dutyList = {};
                 } else {
                     this.buildingList = [].concat(this.buildingList, list);
@@ -337,12 +367,28 @@ export default {
             } catch (e) {}
             this.buildingPage.isLoading = false;
         },
+        resetAssignmentList() {
+            let list = [
+                { name: '未分配', value: 1 },
+                { name: '分配中', value: 2 },
+                { name: '已分配', value: 3 }
+            ];
+            if (
+                this.pageAuthChildren.length == 1 &&
+                !this.selectedAuthTabData.isFlow
+            ) {
+                list.splice(1, 1);
+            }
+            this.assignmentStatusList = list;
+            this.queryForm.assignmentStatus = 0;
+        },
         // 点击责任流程点击处理函数
         tabHandle(data) {
             this.pageAuth.some(item => {
                 if (item.objauthName == data.name) {
                     this.selectedAuthTabData = item;
                     this.pageAuthChildren = item.children;
+                    this.resetAssignmentList();
                     this.getBuildingList(1);
                     return true;
                 }
@@ -369,19 +415,26 @@ export default {
             if (id) {
                 let key = `${this.selectedAuthTabData.objauthCode}_${id}`;
                 if (!this.buildingDutySetting[key]) {
-                    let {
-                        data
-                    } = await this.$api.seeContractDutyService.getCfgObjectDataAuthList(
-                        {
-                            syscode: this.syscode,
-                            objectId: id,
-                            objectType: 'lp',
-                            subFuncCodeList: this.pageAuthChildren.map(
-                                item => item.objauthCode
-                            )
-                        }
-                    );
-                    this.buildingDutySetting[key] = data;
+                    if (
+                        this.buildingList.filter(item => item.id == id)[0]
+                            .assignmentStatus == 1
+                    ) {
+                        this.buildingDutySetting[key] = [];
+                    } else {
+                        let {
+                            data
+                        } = await this.$api.seeContractDutyService.getCfgObjectDataAuthList(
+                            {
+                                syscode: this.syscode,
+                                objectId: id,
+                                objectType: 'lp',
+                                subFuncCodeList: this.pageAuthChildren.map(
+                                    item => item.objauthCode
+                                )
+                            }
+                        );
+                        this.buildingDutySetting[key] = data;
+                    }
                 }
             }
             this.dutyList = {};
@@ -530,6 +583,45 @@ export default {
             // visible: true,
             // title: "合同责任人设置"
             this.dialogMeta.visible = false;
+        },
+        maxError(err) {
+            if (err == 'maxError') {
+                this.$message.warning({
+                    message: `楼盘最多选择${this.maxSelect}个`
+                });
+            }
+        },
+        async chooseAllChange() {
+            if (this.isChooseAllBuilding) {
+                // 根据最多选择数this.maxSelect和优先未分配原则进行全选
+                // <!-- assignmentStatus: 分配状态: 0 全部 1 未分配  2 分配中  3 已分配   -->
+                let choose = [[], [], []];
+                this.buildingList.map(item => {
+                    switch (item.assignmentStatus) {
+                        case 1:
+                            choose[0].push(item);
+                            break;
+                        case 2:
+                            choose[1].push(item);
+                            break;
+                        case 3:
+                            choose[2].push(item);
+                            break;
+                    }
+                });
+                let ids = []
+                    .concat(choose[0], choose[1], choose[2])
+                    .splice(0, this.maxSelect)
+                    .map(item => item.id);
+                for (let i = 0; i < ids.length; i++) {
+                    await this.getAuthDutyUserList([ids[i]]);
+                }
+                this.selectedBuildingIds = ids;
+                this.checkDutyUserSetting();
+            } else {
+                this.selectedBuildingIds = [];
+                this.checkDutyUserSetting();
+            }
         }
     }
 };

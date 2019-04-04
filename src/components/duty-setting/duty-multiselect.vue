@@ -16,7 +16,7 @@
     <div>
         <div
             v-for="(item) of selectList"
-            :key="item[identity]"
+            :key="item[identity]+randomKey"
             class="d-relative fl"
             @click="choose(item)"
         >
@@ -33,6 +33,7 @@
  * @param {Array<any>} list 数据列表集合
  * @param {String} identity 主键，唯一键值，id
  * @param {Boolean} multi 是否多选，默认 false
+ * @param {Number} max 最多选几个，数字，默认不限制
  * @param {Array<identity>} value 已经选中的组合，identity对应的值
  * 事件
  * @event change [<identity>] 已选中的 id 集合
@@ -43,10 +44,11 @@ export default {
         event: 'change'
     },
     components: {},
-    props: ['list', 'identity', 'multi', 'value'],
+    props: ['list', 'identity', 'multi', 'value', 'max'],
     data() {
         return {
-            selectList: [] // 列表数据
+            selectList: [], // 列表数据
+            randomKey: '0' // 随机字符
         };
     },
     computed: {
@@ -67,6 +69,9 @@ export default {
     watch: {
         list() {
             this.resetList();
+        },
+        value() {
+            this.resetList();
         }
     },
     methods: {
@@ -80,6 +85,7 @@ export default {
                     item
                 )
             );
+            this.randomKey = `${Math.random()}`;
         },
         //选中某个选项操作
         choose(item) {
@@ -89,6 +95,13 @@ export default {
             item.$$checked = !item.$$checked;
             // 选中的列表
             let list = this.selectList.filter(item => item.$$checked);
+            let max = parseInt(this.max) || 0;
+            if (max) {
+                if (list.length > max) {
+                    item.$$checked = false;
+                    return this.$emit('error', 'maxError');
+                }
+            }
             // 选中的ids
             let ids = list.map(item => item[this.identity]);
             this.$emit('change', ids, list);

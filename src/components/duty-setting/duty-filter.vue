@@ -81,7 +81,7 @@
 <script>
 export default {
     // params 筛选参数 type 判断当前是已成交还是未成交合同
-    props: ['params'],
+    props: ['params', 'assignmentStatusList'],
     data() {
         return {
             cityOptions: [], // 多级选择列表
@@ -105,6 +105,13 @@ export default {
         };
     },
     created() {},
+    watch: {
+        assignmentStatusList() {
+            let list = JSON.parse(JSON.stringify(this.assignmentStatusList));
+            list.unshift({ name: '全部', value: 0 });
+            this.options = list;
+        }
+    },
     methods: {
         /**提交筛选 */
         submitFilter() {

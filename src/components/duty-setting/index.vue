@@ -5,10 +5,11 @@
  * 2019/3/26
  * @property {string} title 标题
  * @property {string} parent 父级标题
- * @property {int} size 尺寸
- * @property {string} color 图标颜色
+ * @property {int} size 尺寸,默认16像素
  * @property {string} syscode 系统编码
  * @property {string} pageCode 页面编码
+ * @property {string} color 图标颜色
+ * @property {number} buildingMaxSelectNum 选择楼盘最多选择多少个，默认5个
  * @property {Enum} module 所属模块 可取值为 houseCondition 房态模块 contract 合同模块 finance 财务模块 property 物业模块
  */
  -->
@@ -64,6 +65,7 @@ import contractDuty from './duty-dialog';
  * @property {string} syscode 系统编码
  * @property {string} pageCode 页面编码
  * @property {string} color 图标颜色
+ * @property {number} buildingMaxSelectNum 选择楼盘最多选择多少个，默认5个
  * @property {Enum} module 所属模块 可取值为 houseCondition 房态模块 contract 合同模块 finance 财务模块 property 物业模块
  */
 export default {
@@ -77,7 +79,8 @@ export default {
         'syscode', // 系统编码
         'pageCode', // 页面编码
         'color', // 图标颜色
-        'module' // 所属模块 可取值为 houseCondition 房态模块 contract 合同模块 finance 财务模块 property 物业模块
+        'module', // 所属模块 可取值为 houseCondition 房态模块 contract 合同模块 finance 财务模块 property 物业模块
+        'buildingMaxSelectNum' // 选择楼盘最多选择多少个
     ],
     data() {
         return {
@@ -88,7 +91,8 @@ export default {
                 visible: false, // 是否显示dialog
                 title: '', // 标题
                 module: '', // 所属模块
-                parent: '' // 父级标题
+                parent: '', // 父级标题
+                buildingMaxSelectNum: '' // 选择楼盘最多选择多少个
             }
         };
     },
@@ -105,6 +109,7 @@ export default {
         this.dialogMeta.syscode = this.syscode;
         this.dialogMeta.pageCode = this.pageCode;
         this.dialogMeta.module = this.module;
+        this.dialogMeta.buildingMaxSelectNum = this.buildingMaxSelectNum;
     },
     methods: {}
 };
