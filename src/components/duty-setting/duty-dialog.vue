@@ -401,6 +401,12 @@ export default {
         buildingChanged(ids, buildings) {
             // 监听楼盘选择
             this.getAuthDutyUserList(ids);
+            // 及时同步选择状态
+            if (ids.length) {
+                this.isChooseAllBuilding = true;
+            } else {
+                this.isChooseAllBuilding = false;
+            }
         },
         /**获取责任人配置列表 */
         async getAuthDutyUserList(ids) {
