@@ -57,6 +57,16 @@
                     </el-col>
                     <el-col :span="16">
                         <div class="h500 wfull pl10 d-auto-y">
+                            <div class="pre-choose-list" v-if="preChooseList.length">
+                                <div class="pl10">已选择</div>
+                                <span
+                                    :key="item.userId"
+                                    v-for="item of preChooseList"
+                                    @click="delPreChoose(item)"
+                                >
+                                    <peopleCard :user="item" :selected="item.$$selected"></peopleCard>
+                                </span>
+                            </div>
                             <div class="pl10" v-if="deptName">{{deptName}}部门成员</div>
                             <multiSelect
                                 v-model="selectedIds"
@@ -108,6 +118,8 @@ export default {
             deptName: '', //选中的部门名
             parentData: {}, // 父级关系
             flatList: [],
+            allowDiffDept: true, // 是否允许跨部门选择
+            preChooseList: [], // 之前选择的人
             saving: false // 保存操作
         };
     },
@@ -136,14 +148,17 @@ export default {
             let findData = this.findParent(this.tree);
             this.parentData = findData.parentData;
             this.flatList = findData.allList;
+            this.handleNodeClick(this.deptTree[0]);
             if (this.dialogMeta.userIds) {
                 this.selectedIds = this.dialogMeta.userIds;
+                this.savePreSelectPeople();
                 this.userList.some(item => {
                     if (this.dialogMeta.userIds.includes(item.userId)) {
                         this.expandedIds = [item.deptId];
                         this.flatList.some(dept => {
                             if (dept.id == item.deptId) {
                                 this.handleNodeClick(dept);
+                                this.savePreSelectPeople();
                                 return true;
                             }
                         });
@@ -182,14 +197,57 @@ export default {
         // 处理树形节点点击
         async handleNodeClick(data) {
             // 点击部门
-            this.deptName = data.deptName;
-            this.typeName = data.typeName;
-            this.deptId = data.id;
-            this.deptName = data.deptName;
-            this.totalCode = data.totalCode;
-            this.employList = this.userList.filter(
-                item => item.deptId == this.deptId
-            );
+            if (this.deptId != data.id) {
+                this.deptName = data.deptName;
+                this.typeName = data.typeName;
+                this.deptId = data.id;
+                this.deptName = data.deptName;
+                this.totalCode = data.totalCode;
+                this.employList = this.userList.filter(
+                    item => item.deptId == this.deptId
+                );
+                this.savePreSelectPeople();
+            }
+        },
+        /**保存其他部门已经选择的人 */
+        savePreSelectPeople() {
+            if (this.allowDiffDept) {
+                let preList = this.preChooseList.filter(
+                    item => item.$$selected
+                );
+                let preUserIds = preList.map(item => item.userId);
+                let notIncludes = this.selectedIds.filter(
+                    id => !preUserIds.includes(id)
+                );
+                let users = this.userList.filter(item =>
+                    notIncludes.includes(item.userId)
+                );
+                let nowSelected = [];
+                this.employList.map(item => {
+                    if (preUserIds.includes(item.userId)) {
+                        nowSelected.push(item.userId);
+                    }
+                });
+                this.selectedIds = nowSelected;
+                this.preChooseList = preList
+                    .concat(users)
+                    .sort((a, b) => (a.deptId < b.deptId ? -1 : 1))
+                    .map(item => {
+                        this.$set(item, '$$selected', true);
+                        return item;
+                    });
+            }
+        },
+        /**删除其他部门已经选择的人 */
+        delPreChoose(user) {
+            user.$$selected = !user.$$selected;
+            if (!user.$$selected) {
+                if (this.selectedIds.includes(user.userId)) {
+                    this.selectedIds = this.selectedIds.filter(
+                        id => id != user.userId
+                    );
+                }
+            }
         },
         filterPeople(text, cb) {
             // 输入框过滤人员列表
@@ -216,14 +274,35 @@ export default {
                 this.handleNodeClick(node);
             }
         },
-        peopleChanged() {},
+        peopleChanged(newV, oldV, list) {
+            if (this.allowDiffDept) {
+                let delV = oldV.filter(item => !newV.includes(item));
+                this.preChooseList.map(item => {
+                    if (delV.includes(item.userId)) {
+                        item.$$selected = false;
+                    } else if (newV.includes(item.userId)) {
+                        item.$$selected = true;
+                    }
+                });
+            }
+        },
         // 关闭当前弹框
         close(users) {
             this.$emit('close', users);
         },
         // 保存选择数据
         async save() {
-            if (this.selectedIds.length) {
+            let selectedIds = this.selectedIds;
+            if (this.allowDiffDept) {
+                selectedIds = [].concat(
+                    this.selectedIds,
+                    this.preChooseList.map(item => item.userId)
+                );
+                selectedIds = selectedIds.filter(
+                    (item, index) => selectedIds.indexOf(item) == index
+                );
+            }
+            if (selectedIds.length) {
                 let {
                     funcCode,
                     funcDesc,
@@ -249,14 +328,14 @@ export default {
                         Object.assign(
                             {
                                 objectType: 'lp',
-                                targetUserIds: this.selectedIds
+                                targetUserIds: selectedIds
                             },
                             { funcCode, funcDesc, syscode, objectIds }
                         )
                     );
                     // 向父级传递回显信息
                     let users = this.userList
-                        .filter(item => this.selectedIds.includes(item.userId))
+                        .filter(item => selectedIds.includes(item.userId))
                         .map(item => {
                             return {
                                 funcCode,
@@ -287,6 +366,10 @@ export default {
 }
 .h500 {
     height: 500px;
+}
+.pre-choose-list {
+    width: 100%;
+    display: inline-block;
 }
 </style>
 

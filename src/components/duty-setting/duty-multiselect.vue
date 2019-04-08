@@ -15,12 +15,18 @@
 <template>
     <div>
         <div
-            v-for="(item) of selectList"
+            v-for="(item,index) of selectList"
             :key="item[identity]+randomKey"
             class="d-relative fl"
             @click="choose(item)"
         >
-            <slot name="card" :item="item" :selected="item.$$checked"></slot>
+            <slot
+                name="card"
+                :item="item"
+                :selected="item.$$checked"
+                :index="index"
+                :preItem="index>0?selectList[index-1]:null"
+            ></slot>
         </div>
     </div>
 </template>
@@ -48,7 +54,8 @@ export default {
     data() {
         return {
             selectList: [], // 列表数据
-            randomKey: '0' // 随机字符
+            randomKey: '0', // 随机字符
+            preSelected: [] // 之前选中的
         };
     },
     computed: {
@@ -85,6 +92,7 @@ export default {
                     item
                 )
             );
+            this.preSelected = this.value;
             this.randomKey = `${Math.random()}`;
         },
         //选中某个选项操作
@@ -104,7 +112,8 @@ export default {
             }
             // 选中的ids
             let ids = list.map(item => item[this.identity]);
-            this.$emit('change', ids, list);
+            this.$emit('change', ids, this.preSelected || [], list);
+            this.preSelected = ids;
         }
     }
 };
