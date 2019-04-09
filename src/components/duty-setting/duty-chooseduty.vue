@@ -296,7 +296,9 @@ export default {
             if (this.allowDiffDept) {
                 selectedIds = [].concat(
                     this.selectedIds,
-                    this.preChooseList.map(item => item.userId)
+                    this.preChooseList
+                        .filter(item => item.$$selected)
+                        .map(item => item.userId)
                 );
                 selectedIds = selectedIds.filter(
                     (item, index) => selectedIds.indexOf(item) == index
