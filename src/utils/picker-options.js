@@ -27,7 +27,7 @@
 
 const pickerOptionsRange = {
   shortcuts: [{
-    text: '最近三天',
+    text: '前三天',
     onClick(picker) {
       const end = new Date();
       const start = new Date();
@@ -35,7 +35,7 @@ const pickerOptionsRange = {
       picker.$emit('pick', [start, end]);
     }
   },{
-    text: '最近一周',
+    text: '前一周',
     onClick(picker) {
       const end = new Date();
       const start = new Date();
@@ -43,7 +43,7 @@ const pickerOptionsRange = {
       picker.$emit('pick', [start, end]);
     }
   }, {
-    text: '最近一个月',
+    text: '前一个月',
     onClick(picker) {
       const end = new Date();
       const start = new Date();
@@ -51,7 +51,7 @@ const pickerOptionsRange = {
       picker.$emit('pick', [start, end]);
     }
   }, {
-    text: '最近三个月',
+    text: '前三个月',
     onClick(picker) {
       const end = new Date();
       const start = new Date();
@@ -59,7 +59,7 @@ const pickerOptionsRange = {
       picker.$emit('pick', [start, end]);
     }
   }, {
-    text: '最近半年',
+    text: '前半年',
     onClick(picker) {
       const end = new Date();
       const start = new Date();
