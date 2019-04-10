@@ -70,6 +70,14 @@ const pickerOptionsRange = {
 }
 const dateOptionsAfter = {
   shortcuts: [{
+    text: '后三天',
+    onClick(picker) {
+      const end = new Date();
+      const start = new Date();
+      end.setTime(start.getTime() + 3600 * 1000 * 24 * 3);
+      picker.$emit('pick', [start, end]);
+    }
+  },{
     text: '后一周',
     onClick(picker) {
       const end = new Date();
@@ -78,14 +86,6 @@ const dateOptionsAfter = {
       picker.$emit('pick', [start, end]);
     }
   },{
-    text: '后两周',
-    onClick(picker) {
-      const end = new Date();
-      const start = new Date();
-      end.setTime(start.getTime() + 3600 * 1000 * 24 * 7);
-      picker.$emit('pick', [start, end]);
-    }
-  }, {
     text: '后一个月',
     onClick(picker) {
       const end = new Date();
@@ -94,11 +94,19 @@ const dateOptionsAfter = {
       picker.$emit('pick', [start, end]);
     }
   }, {
-    text: '后两个月',
+    text: '后三个月',
     onClick(picker) {
       const end = new Date();
       const start = new Date();
       end.setTime(start.getTime() + 3600 * 1000 * 24 * 90);
+      picker.$emit('pick', [start, end]);
+    }
+  }, {
+    text: '后半年',
+    onClick(picker) {
+      const end = new Date();
+      const start = new Date();
+      end.setTime(start.getTime() + 3600 * 1000 * 24 * 180);
       picker.$emit('pick', [start, end]);
     }
   }]
