@@ -109,11 +109,11 @@ var verify = {
     }
   },
   bankCard(_rule, value, callback) {
-    var reg = /^[a-zA-Z0-9\*]{12,19}$/;
+    var reg = /^[a-zA-Z0-9\*]{16,20}$/;
     if (!value || reg.test(value)) {
       callback();
     } else {
-      return callback(new Error('请输入12-19位银行卡号'));
+      return callback(new Error('请输入16-20位银行卡号'));
     }
   },
   // 邮编验证
