@@ -86,7 +86,10 @@ var findWaterConfig = function(currConfig, url,) {
 
 export default {
   created(){
-    let timeStamp = new Date().getTime()
+  },
+  methods: {
+    getOssTicket(){
+      let timeStamp = new Date().getTime()
       OSS = this.$local.fetch('OSS')
       if(!OSS || OSS && !OSS.expiration ||  OSS && OSS.expiration && OSS.expiration  <  timeStamp ) {
         // oss不存在 或者 且oss expiration不存在 或者 expartion 小于 timeStamp 重新请求
@@ -98,11 +101,11 @@ export default {
             }
         })
       }
-  },
-  methods: {
+    }
   },
   filters: {
     watermark(url, watermarkType) {
+        this.getOssTicket()
         var currWatermarkConfig = getWatermark(watermarkType);
         return findWaterConfig(currWatermarkConfig, url);
     }
