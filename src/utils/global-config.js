@@ -11,6 +11,7 @@ import filters from './filters.js';
 import local from './localStorage.js';
 import dictionary from './dictionary';
 import directives from './directives';
+import watermark from './watermark';
 import components from '../components';
 import buttonAuthority from './button-authority';
 import {pickerOptionsMoment,pickerOptionsRange,dateOptionsAfter} from './picker-options';
@@ -24,6 +25,7 @@ export default {
 
     vm.mixin(dictionary);
     vm.mixin(directives);
+    vm.mixin(watermark);
     vm.mixin(components);
     vm.mixin(buttonAuthority);
     vm.mixin({
