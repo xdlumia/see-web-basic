@@ -166,6 +166,8 @@ import peopleCard from './duty-peoplecard'; // 责任人卡片
 import buildingCard from './duty-buildingcard'; // 楼盘信息卡片
 import choosePeople from './duty-chooseduty'; // 选择责任人弹框
 
+// 控制流程审核节点的开启和关闭
+let ifUserDefineProcessAuditor;
 /**
  * 责任人选择弹框
  * @author 赵伦
@@ -273,29 +275,17 @@ export default {
         },
         /**获取流程责任权限配置信息 */
         async getAuthSettingConfig() {
-            if (!window.dutyProgressConfig) {
+            if (typeof ifUserDefineProcessAuditor=="undefined") {
                 let {
                     data
-                } = await this.$api.seeHouseConfigService.getHouseTypeConfig();
-                let config = data.filter(item => item.id == 13);
-                window.dutyProgressConfig = {}; //流程责任权限,放在全局环境
-                config[0].values.map(item => {
-                    let isOpen = item.actualValue == '1' ? true : false;
-                    switch (item.id) {
-                        case 44:
-                            dutyProgressConfig.houseCondition = isOpen;
-                            break;
-                        case 45:
-                            dutyProgressConfig.contract = isOpen;
-                            break;
-                        case 46:
-                            dutyProgressConfig.finance = isOpen;
-                            break;
-                        case 47:
-                            dutyProgressConfig.property = isOpen;
-                            break;
-                    }
-                });
+                } = await this.$api.seeContractDutyService.queryProcessSet('ifUserDefineProcessAuditor');
+                let {content} = data;
+                content = JSON.parse(content);
+                if(content.switch=="false"||!content.switch){
+                    ifUserDefineProcessAuditor = false;
+                }else{
+                    ifUserDefineProcessAuditor = true;
+                }
             }
         },
         /**获取页面tab和人员设置列表配置信息 */
@@ -307,8 +297,7 @@ export default {
                 syscode: this.syscode,
                 pageCode: this.pageCode
             });
-            // module所属模块 可取值为 houseCondition 房态模块 contract 合同模块 finance 财务模块 property 物业模块
-            let isOpenFlow = window.dutyProgressConfig[this.module];
+            let isOpenFlow = ifUserDefineProcessAuditor;
             // 过滤流程
             data = data.filter(
                 item => (item.isFlow && isOpenFlow) || !item.isFlow
