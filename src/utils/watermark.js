@@ -13,7 +13,6 @@ import api from '../api';
 import Vue from 'vue';
 import { Base64 } from 'js-base64';
 let baseURL = window.g.ApiUrl
-let OSS = {}
 
 var watermarkCache = {};
 var getWatermark = function(watermarkType) {
@@ -47,7 +46,7 @@ var findWaterConfig = function(currConfig, url,) {
         8:'se',
     }
     let imgUrl = url
-    let bucketType = OSS.bucket
+    let bucketType = baseURL.ossBucket
     // 水印公共
     let config = '?x-oss-process=image/auto-orient,1/quality,q_100/watermark,'
     let bucket = 'bucket_'+bucketType+','
@@ -86,18 +85,6 @@ var findWaterConfig = function(currConfig, url,) {
 
 export default {
   created(){
-    let timeStamp = new Date().getTime()
-      OSS = this.$local.fetch('OSS')
-      if(!OSS || OSS && !OSS.expiration ||  OSS && OSS.expiration && OSS.expiration  <  timeStamp ) {
-        // oss不存在 或者 且oss expiration不存在 或者 expartion 小于 timeStamp 重新请求
-        this.$api.seeExternService.getOssTicket()
-        .then(res => {
-            if(res.code == 200) {
-                this.$local.save('OSS' , res.data)
-                OSS = res.data || {}
-            }
-        })
-      }
   },
   methods: {
   },
