@@ -56,7 +56,7 @@
                         </div>
                     </el-col>
                     <el-col :span="16">
-                        <div class="h500 wfull pl10 d-auto-y">
+                        <div class="h500 wfull pl10 d-auto-y" ref="scrollContainer">
                             <div class="pre-choose-list" v-if="preChooseList.length">
                                 <div class="pl10">已选择</div>
                                 <span
@@ -74,6 +74,7 @@
                                 :value="selectedIds"
                                 :list="employList"
                                 identity="userId"
+                                ref="peopleList"
                                 @change="peopleChanged"
                             >
                                 <template v-slot:card="{item,selected}">
@@ -261,7 +262,7 @@ export default {
             } else cb([]);
         },
         // 自动补充选择某个人
-        choosePeople(data) {
+        async choosePeople(data) {
             this.expandedIds = [data.deptId];
             let node;
             this.flatList.some(item => {
@@ -272,6 +273,32 @@ export default {
             });
             if (node) {
                 this.handleNodeClick(node);
+                this.selectedIds.push(data.userId);
+                await this.sleep(200);
+                this.scrollToPeople(data.userId);
+            }
+        },
+        sleep(timeout) {
+            return new Promise(r => {
+                setTimeout(() => r(), timeout);
+            });
+        },
+        /**自动滚动到某个人 */
+        async scrollToPeople(userId) {
+            let dom;
+            let peopleDom;
+            this.$refs.peopleList.$children.map(item => {
+                if (item.user.userId == userId) {
+                    peopleDom = item.$el;
+                    dom = item.$el.parentElement;
+                }
+            });
+            if (dom) {
+                peopleDom.classList.remove('checked');
+                await this.sleep(500);
+                let top = dom.offsetTop;
+                this.$refs.scrollContainer.scrollTop = top;
+                peopleDom.classList.add('checked');
             }
         },
         peopleChanged(newV, oldV, list) {

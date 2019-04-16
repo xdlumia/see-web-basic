@@ -58,6 +58,7 @@ export default {
     width: 130px;
     height: 60px;
     border: 1px solid #dcdfe6;
+    transition: background 500s ease-in-out;
     position: relative;
     border-left: none;
     display: flex;
