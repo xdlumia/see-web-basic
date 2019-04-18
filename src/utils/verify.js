@@ -85,11 +85,11 @@ var verify = {
     }
   },
   price(_rule, value, callback) {
-      var reg = /^((-)?([1-9]\d*(\.\d{1,2})?)|((0)|((-)?0(\.(([1-9][0-9]?)|(0[1-9]))))))$/;
-      if ((!value || reg.test(value) && value < 99999999999.99)) {
-          callback();
+      var reg = /^((-)?([0-9]\d*(\.\d{1,2})?)|((0)|((-)?0(\.(([0-9][0-9]?)|(0[0-9]))))))$/;
+      if (!value || reg.test(value) && value < 99999999999.99) {
+        callback();
       } else {
-          return callback(new Error("金额不合法,金额整数位不能超过11位"));
+        return callback(new Error("金额不合法,金额整数位不能超过11位,小数不能超过两位"));
       }
   },
   area(_rule, value, callback) {
