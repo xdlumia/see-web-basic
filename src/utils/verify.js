@@ -93,11 +93,11 @@ var verify = {
       }
   },
   area(_rule, value, callback) {
-      var reg = /^((-)?([1-9]\d*(\.\d{1,2})?)|((0)|((-)?0(\.(([1-9][0-9]?)|(0[1-9]))))))$/;
+      var reg = /^(([1-9]\d*(\.\d{1,2})?)|((0)|((-)?0(\.(([1-9][0-9]?)|(0[1-9]))))))$/;
       if ((!value || reg.test(value) && value < 999999.99)) {
           callback();
       } else {
-          return callback(new Error("面积不合法,面积整数位不能超过6位"));
+          return callback(new Error("面积必须为正数,面积整数位不能超过6位"));
       }
   },
   positiveFloat(_rule, value, callback){
