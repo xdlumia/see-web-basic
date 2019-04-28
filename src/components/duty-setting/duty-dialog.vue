@@ -377,6 +377,7 @@ export default {
                 if (item.objauthName == data.name) {
                     this.selectedAuthTabData = item;
                     this.pageAuthChildren = item.children;
+                    this.buildingDutySetting={};
                     this.resetAssignmentList();
                     this.getBuildingList(1);
                     return true;
@@ -451,14 +452,16 @@ export default {
                 let key = `${this.selectedAuthTabData.objauthCode}_${id}`;
                 let _dutyList = JSON.parse(JSON.stringify(dutyList));
                 let _dutyIdList = JSON.parse(JSON.stringify(dutyIdList));
-                this.buildingDutySetting[key].map(item => {
-                    if (_dutyList[item.funcCode]) {
-                        _dutyList[item.funcCode].push(item);
-                        _dutyIdList[item.funcCode].push(item.empobj.userId);
-                    }
-                });
-                return { dutyList: _dutyList, dutyIdList: _dutyIdList };
-            });
+                if(this.buildingDutySetting[key]){
+                    this.buildingDutySetting[key].map(item => {
+                        if (_dutyList[item.funcCode]) {
+                            _dutyList[item.funcCode].push(item);
+                            _dutyIdList[item.funcCode].push(item.empobj.userId);
+                        }
+                    });
+                    return { dutyList: _dutyList, dutyIdList: _dutyIdList };
+                }
+            }).filter(a=>a);
             if (multiDutyList[0]) {
                 dutyList = multiDutyList[0].dutyList;
                 dutyIdList = multiDutyList[0].dutyIdList;
