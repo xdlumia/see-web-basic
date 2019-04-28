@@ -573,7 +573,7 @@ export default {
                             item.assignmentStatus = 2; // 分配中
                             break;
                     }
-                    this.$set(this.buildingList, 0, item);
+                    this.$set(this.buildingList, index, item);
                 }
             });
         },
