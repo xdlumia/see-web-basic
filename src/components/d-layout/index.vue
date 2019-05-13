@@ -79,6 +79,7 @@
                 currentTime:'',
                 currentDate:'',
                 errotTips:'', //登陆错误提示
+                timer: null  // 定时器名称    
             };
         },
         computed: {
@@ -152,7 +153,7 @@
             watchMouseKey(){
                 // 存储当前时间
                 localStorage.setItem("lockScreenTime", new Date().getTime());
-                window.setInterval(()=>{
+                this.timer = window.setInterval(()=>{
                     // 获取最新时间 锁屏显示调用
                     this.getCurrentTime()
 
@@ -244,6 +245,10 @@
                 this.$router.push({ path: '/login' })
             }
         },
+        beforeDestroy() {
+            clearInterval(this.timer);        
+            this.timer = null;
+        }
     };
 </script>
 <style scope lang="scss" >
