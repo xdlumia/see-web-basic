@@ -40,7 +40,7 @@
         <el-table
         highlight-current-row
         :data="tableDate"
-        border
+        :border="border"
         :height="tableHeight"
         v-loading="loading"
         :size="size"
@@ -80,6 +80,10 @@ export default {
     // 尺寸
     size: {
       default: 'small'
+    },
+    // 尺寸
+    border: {
+      default: true
     },
     // 分页
     paging: {
