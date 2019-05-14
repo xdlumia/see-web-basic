@@ -10,8 +10,6 @@ axios.interceptors.request.use(config => {
   if (window.router && window.router.currentRoute && window.router.currentRoute.query && window.router.currentRoute.query.token) {
     config.headers.finger = window.router.currentRoute.query.finger;
     config.headers.token = window.router.currentRoute.query.token;
-    localStorage.finger = window.router.currentRoute.query.finger
-    localStorage.token = window.router.currentRoute.query.token
 
   } else {
     config.headers.finger = window.localStorage.getItem('finger') || '';
