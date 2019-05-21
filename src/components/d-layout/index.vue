@@ -23,11 +23,11 @@
                 >我知道了</el-button>
             </div>
         </el-dialog>
-        <div class="lock-screen lock-screen-bg" v-show="isLockScreen" :class="{active:isLogin}"></div>
-        <div class="lock-screen lock-screen-main" v-show="isLockScreen">
+        <div class="lock-screen lock-screen-bg" v-if="isLockScreen" :class="{active:isLogin}"></div>
+        <div class="lock-screen lock-screen-main" v-if="isLockScreen">
             <div class="lock-current-time" :class="{active:isLogin}">
-                <time class="lock-time">{{currentTime}}</time>
-                <p class="lock-date">{{currentDate}}</p>
+                <time class="lock-time">{{currentTime | timeToStr('hh:mm')}}</time>
+                <p class="lock-date">{{currentTime | timeToStr('MM月DD日 dddd')}}</p>
             </div>
             <div class="lock-login-box" :class="{active:isLogin}">
                 <div class="login-logo">
@@ -76,10 +76,9 @@
                 isLockScreen:false, //是否锁屏
                 isLogin:false, // 是否登录
                 outTime:lockScreenOutTime || 15, // 不操作锁屏时间 /分钟
-                currentTime:'',
-                currentDate:'',
+                currentTime: 0,
                 errotTips:'', //登陆错误提示
-                timer: null  // 定时器名称    
+                timer: null  // 定时器名称
             };
         },
         computed: {
@@ -107,7 +106,7 @@
             // 监控键盘鼠标
             this.watchMouseKey();
             // 获取当前时间
-            this.getCurrentTime() 
+            this.getCurrentTime()
         },
         beforeMount() {},
         watch: {
@@ -158,11 +157,11 @@
                     this.getCurrentTime()
 
                     // 获取当前时间戳
-                    let currentTime = new Date().getTime()
+                    let currentTime = this.currentTime
                     // 获取上次操作之后存储的时间
                     let localTime = localStorage.lockScreenTime
                     /**
-                     * 当(当前时间 - 上次操作的时间)  = 设置的锁屏时间 
+                     * 当(当前时间 - 上次操作的时间)  = 设置的锁屏时间
                      * 并且当前没有锁屏的情况下锁屏
                      */
                     if ((currentTime - localTime) >= this.outTime * 60 * 1000  && !this.isLockScreen) {
@@ -173,7 +172,7 @@
                            localStorage.token = ''
                         //    this.logout()
                        },1000);
-                       
+
                        this.loginForm.pwd = ''
                     }
                     // 如果当前是锁屏并且是登录界面 20秒后无操作后重新锁定
@@ -196,7 +195,7 @@
                         localStorage.setItem("lockScreenTime", new Date().getTime());
                         // 如果当前是锁屏 并且没有登录框的时候 操作键盘出现登录框
                         this.showLoginBox()
-                        
+
                 };
             },
             showLoginBox(){
@@ -209,12 +208,11 @@
                         this.$refs.loginInput.$el.querySelector('input').focus()
                     }
                     catch(err){}
-                }                
+                }
             },
             // 获取当前时间
             getCurrentTime(){
-                this.currentTime = moment().format('hh:mm') //获取当前日期
-                this.currentDate = moment().format('MM月DD日 dddd') //获取当前日期
+                this.currentTime = new Date().getTime();
             },
             // 重新登录
             submitLogin(){
@@ -231,7 +229,7 @@
                 .catch(error=>{
                    this.errotTips = error || ''
                 })
-                
+
             },
             // 退出 暂未使用
             logout(){
@@ -246,7 +244,7 @@
             }
         },
         beforeDestroy() {
-            clearInterval(this.timer);        
+            clearInterval(this.timer);
             this.timer = null;
         }
     };
@@ -260,15 +258,15 @@
         margin-right: 2px;
         width: 240px;
     }
-    .lock-screen{ 
-        position:fixed; 
-        top:0; bottom: 0; left:0; right: 0; 
+    .lock-screen{
+        position:fixed;
+        top:0; bottom: 0; left:0; right: 0;
         height: 100%;
     }
-    .lock-screen-bg{ 
-        background: url('http://area.sinaapp.com/bingImg/') no-repeat; 
+    .lock-screen-bg{
+        background: url('http://area.sinaapp.com/bingImg/') no-repeat;
         background-size: cover;
-        z-index: 9998; 
+        z-index: 9998;
         // visibility: hidden;
         // opacity: 0;
         // transition:.2s;
@@ -280,23 +278,23 @@
     // .lock-screen-bg.active{
     //     filter: blur(6px);
     // }
-    .lock-screen-main{ 
+    .lock-screen-main{
         background:rgba(0,0,0,.5);
         z-index: 9999;
         text-align: center;
-        .lock-current-time{ 
-            top:20%; position:relative; 
-            .lock-time{ font-size:120px; color:#fff; font-weight: 300; transition:.2s; display: inline-block; line-height: 120px;} 
-            .lock-date{ font-size:25px; color:#fff; font-weight: 300}; transition:.2s; 
+        .lock-current-time{
+            top:20%; position:relative;
+            .lock-time{ font-size:120px; color:#fff; font-weight: 300; transition:.2s; display: inline-block; line-height: 120px;}
+            .lock-date{ font-size:25px; color:#fff; font-weight: 300}; transition:.2s;
         }
-        
-        .lock-login-box{ 
-            position: absolute; 
-            top:20%; bottom:0; left:0; right: 0; width:260px; 
+
+        .lock-login-box{
+            position: absolute;
+            top:20%; bottom:0; left:0; right: 0; width:260px;
             margin: auto; transform: scale(.8,.8);transition:.3s;
-            opacity: 0;visibility: hidden; 
+            opacity: 0;visibility: hidden;
             filter:bulr(10px);
-            .login-logo{ 
+            .login-logo{
                 margin:0 auto;  color:#fff; font-size: 18px;
                 p{margin:10px 0 20px 0}
                 img{display: inline-block; width:120px; background-color: #fff; height: 120px; border-radius: 50%; object-fit: cover}
@@ -304,13 +302,13 @@
         }
     }
     .lock-login-box.active{ transform: scale(1,1); visibility: visible; opacity: 1;}
-    
-    .lock-current-time.active{ 
+
+    .lock-current-time.active{
         top:5%;
-        .lock-time{ font-size:45px; line-height: 45px;} 
-        .lock-date{ font-size:14px;}; 
+        .lock-time{ font-size:45px; line-height: 45px;}
+        .lock-date{ font-size:14px;};
         }
-    
+
 </style>
 
 
