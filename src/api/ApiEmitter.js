@@ -1,8 +1,10 @@
 import Api from './request'
+import axios from 'axios';
 
 let baseURL = window.g.ApiUrl;
 let reg = /\{[\S]*?\}/g;
 let mockKey = '__mockAddress';
+let CancelToken = axios.CancelToken;
 
 const createApi = (config, serviceName) => {
     let result = {};
@@ -10,7 +12,7 @@ const createApi = (config, serviceName) => {
 
     delete config[mockKey]
 
-    let generateApiFunction = function (url, method, useMock, config) {
+    let generateApiFunction = function (url, method, useMock, config = {}) {
         let userUrlParam = false;
         let urls = url.split(reg)
 
@@ -18,28 +20,62 @@ const createApi = (config, serviceName) => {
             userUrlParam = true
         }
 
-        return function (params, ...urlParams) {
+        // 支持取消请求
+        let supportCancel = false
+        let cancelSources
+
+        let fn =  function (params, ...urlParams) {
             if (userUrlParam) {
               if ((urlParams.length + 1) !== urls.length) {
                 throw new Error(`url: ${url} 需要 ${urls.length - 1} 个参数，实际有${urlParams.length}个`)
               }
             }
-            let serviceUrl = ''
 
-            if (!useMock) {
-                serviceUrl = baseURL[serviceName]
+            let source
+            if (supportCancel) {
+              source = CancelToken.source()
+              config.cancelToken = source.token
 
-                if (!serviceUrl) {
-                    throw new Error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
-                }
-
-
+              cancelSources.push(source)
             }
 
-            return Api[method](serviceUrl + (userUrlParam ? urls.reduce((previousValue, currentValue, currentIndex) => {
+            let serviceUrl = baseURL[serviceName]
+
+            if (!serviceUrl) {
+              let msg = `serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`;
+              if (!useMock) {
+                throw new Error(msg)
+              } else {
+                console.error(msg)
+              }
+            }
+
+
+            let callAPI = Api[method](serviceUrl + (userUrlParam ? urls.reduce((previousValue, currentValue, currentIndex) => {
                 return currentIndex === 0 ? currentValue : previousValue + urlParams.shift() + currentValue
             }, null) : url), params, config)
+
+            if (supportCancel) {
+              callAPI.finally(() => {
+                cancelSources.splice(cancelSources.indexOf(source), 1)
+              })
+            }
+
+            return callAPI
         }
+
+        fn.cancel = function() {
+          cancelSources = []
+          supportCancel = true
+
+          fn.cancel = function() {
+            cancelSources.forEach(source => {
+              source.cancel()
+            })
+          }
+        }
+
+        return fn
     };
 
     for (let key in config) {

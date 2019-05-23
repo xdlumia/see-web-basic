@@ -57,8 +57,8 @@ axios.interceptors.response.use(response => {
 
   // 成功返回数据
   return res;
-}, error => {
-  Message.error({
+  }, error => {
+  error.__CANCEL__ || Message.error({
     message: error.message,
     duration: 3000,
     dangerouslyUseHTMLString: true,
