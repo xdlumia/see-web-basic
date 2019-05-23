@@ -49,7 +49,7 @@ export default {
     methods: {}
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .task-person {
     position: absolute;
     left: 0;
@@ -58,16 +58,16 @@ export default {
     width: 130px;
     height: 60px;
     border: 1px solid #dcdfe6;
-    transition: background 500s ease-in-out;
     position: relative;
     border-left: none;
     display: flex;
+    background-color: #fff;
     @at-root .checked {
         .task-person {
-            background: #189eff;
+            background-color: #189eff;
             .worker {
                 color: #189eff !important;
-                background: #fff !important;
+                background-color: #fff !important;
             }
             .d-taskName {
                 color: #fff;
@@ -88,7 +88,7 @@ export default {
         border-radius: 50%;
         line-height: 35px;
         color: #fff;
-        background: #189eff;
+        background-color: #189eff;
         position: absolute;
         left: 11px;
         top: 12px;

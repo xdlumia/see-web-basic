@@ -23,7 +23,7 @@
                     type="primary"
                     size="mini"
                     @click="save"
-                    :disabled="!this.selectedIds.length"
+                    :disabled="!canSave"
                     :loading="saving"
                 >保存</el-button>
             </div>
@@ -60,10 +60,12 @@
                             <div class="pre-choose-list" v-if="preChooseList.length">
                                 <div class="pl10">已选择</div>
                                 <span
+                                    class="pre-choose-people"
                                     :key="item.userId"
                                     v-for="item of preChooseList"
                                     @click="delPreChoose(item)"
                                 >
+                                    <span class="close" :class="{selected:item.$$selected}" @click="removePreChoose(item)" title="移除">×</span>
                                     <peopleCard :user="item" :selected="item.$$selected"></peopleCard>
                                 </span>
                             </div>
@@ -124,7 +126,14 @@ export default {
             saving: false // 保存操作
         };
     },
-    computed: {},
+    computed: {
+        canSave(){
+            if(this.selectedIds.length){
+                return true;
+            }
+            return this.preChooseList.some(item=>item.$$selected);
+        }
+    },
     created() {
         this.getList();
     },
@@ -209,6 +218,15 @@ export default {
                 );
                 this.savePreSelectPeople();
             }
+        },
+        removePreChoose(item){
+            this.preChooseList.some((p,i)=>{
+                if(p==item){
+                    this.preChooseList.splice(i,1);
+                    this.selectedIds=this.selectedIds.filter(id=>id!=p.userId)
+                    return true;
+                }
+            })
         },
         /**保存其他部门已经选择的人 */
         savePreSelectPeople() {
@@ -399,6 +417,25 @@ export default {
 .pre-choose-list {
     width: 100%;
     display: inline-block;
+    .pre-choose-people{
+        position: relative;
+        display: inline-block;
+        .close{
+            position: absolute;
+            right: 14px;
+            top: 13px;
+            z-index: 1;
+            cursor: pointer;
+            line-height: 12px;
+            color:#189eff;
+            &.selected{
+                color: #fff;
+            }
+            &:hover{
+                color: #ec5555;
+            }
+        }
+    }
 }
 </style>
 
