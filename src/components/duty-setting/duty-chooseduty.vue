@@ -23,7 +23,6 @@
                     type="primary"
                     size="mini"
                     @click="save"
-                    :disabled="!canSave"
                     :loading="saving"
                 >保存</el-button>
             </div>
@@ -349,7 +348,7 @@ export default {
                     (item, index) => selectedIds.indexOf(item) == index
                 );
             }
-            if (selectedIds.length) {
+            // if (selectedIds.length) {
                 let {
                     funcCode,
                     funcDesc,
@@ -395,7 +394,7 @@ export default {
                 } catch (e) {
                     this.saving = false;
                 }
-            }
+            // }
         }
     }
 };
