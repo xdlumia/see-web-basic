@@ -529,7 +529,7 @@ export default {
         async closeSubDialog(users) {
             this.subDialogMeta.visible = false;
             if (users) {
-                let funcCode = users[0].funcCode;
+                let funcCode = this.subDialogMeta.funcCode;
                 this.dutyList[funcCode] = users;
                 this.selectedBuildingIds.map(id => {
                     let key = `${this.selectedAuthTabData.objauthCode}_${id}`;
