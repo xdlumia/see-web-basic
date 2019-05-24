@@ -166,8 +166,6 @@ import peopleCard from './duty-peoplecard'; // 责任人卡片
 import buildingCard from './duty-buildingcard'; // 楼盘信息卡片
 import choosePeople from './duty-chooseduty'; // 选择责任人弹框
 
-// 控制流程审核节点的开启和关闭
-let ifUserDefineProcessAuditor;
 /**
  * 责任人选择弹框
  * @author 赵伦
@@ -274,30 +272,27 @@ export default {
             }
         },
         /**获取流程责任权限配置信息 */
-        async getAuthSettingConfig() {
-            if (typeof ifUserDefineProcessAuditor=="undefined") {
+        async getAuthSettingConfig() { 
                 let {
                     data
                 } = await this.$api.seeContractDutyService.queryProcessSet('ifUserDefineProcessAuditor');
                 let {content} = data;
                 content = JSON.parse(content);
                 if(content.switch=="false"||!content.switch){
-                    ifUserDefineProcessAuditor = false;
+                    return false;
                 }else{
-                    ifUserDefineProcessAuditor = true;
-                }
-            }
+                    return true;
+                } 
         },
         /**获取页面tab和人员设置列表配置信息 */
         async getPageAuth() {
-            await this.getAuthSettingConfig();
+            let isOpenFlow = await this.getAuthSettingConfig();
             let {
                 data
             } = await this.$api.seeContractDutyService.getCfgPageAuth({
                 syscode: this.syscode,
                 pageCode: this.pageCode
             });
-            let isOpenFlow = ifUserDefineProcessAuditor;
             // 过滤流程
             data = data.filter(
                 item => (item.isFlow && isOpenFlow) || !item.isFlow
@@ -534,7 +529,7 @@ export default {
         async closeSubDialog(users) {
             this.subDialogMeta.visible = false;
             if (users) {
-                let funcCode = users[0].funcCode;
+                let funcCode = this.subDialogMeta.funcCode;
                 this.dutyList[funcCode] = users;
                 this.selectedBuildingIds.map(id => {
                     let key = `${this.selectedAuthTabData.objauthCode}_${id}`;
