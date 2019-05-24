@@ -76,7 +76,7 @@
         default:'650px'
       },
       modal:{
-        default:true
+        default:false
       }
     },
     data() {

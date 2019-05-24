@@ -25,6 +25,7 @@ axios.interceptors.response.use(response => {
   if (res.code == 402) {
     if(window.router && router.currentRoute.fullPath != '/login' && !router.currentRoute.query.token){
       localStorage.loginRedirect = router.currentRoute.fullPath
+      sessionStorage.setItem("loginRedirect", router.currentRoute.fullPath);
     }
     // TODO: 换个方式
     window.router && router.push({
