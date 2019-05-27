@@ -5,6 +5,7 @@
 **/
 import '../assets/css/app.css';
 import './verify';
+import './element-extend'
 
 import api from '../api';
 import filters from './filters.js';
@@ -15,6 +16,8 @@ import watermark from './watermark';
 import components from '../components';
 import buttonAuthority from './button-authority';
 import {pickerOptionsMoment,pickerOptionsRange,dateOptionsAfter} from './picker-options';
+
+
 export default {
   install: function install(vm) {
     vm.prototype.$api = api;
