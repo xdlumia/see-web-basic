@@ -321,6 +321,7 @@ body{ background: #fff }
 }
 .d-cell{flex: 1}
 .d-shrink{flex-shrink:1;}
+/* 水平垂直居中 */
 .d-center{display: flex; flex-flow: wrap; align-items: center; justify-content:center}
 
 /*旧浏览器*/
