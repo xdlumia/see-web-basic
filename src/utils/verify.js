@@ -38,7 +38,7 @@ const verify = {
     if (!value || reg.test(value)) {
       callback();
     } else {
-      return callback(new Error("请输入正确的手机号码"));
+      return callback(new Error("手机号不正确，请重新输入！"));
     }
   },
 
