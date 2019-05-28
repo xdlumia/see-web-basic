@@ -33,7 +33,7 @@ const verify = {
 
   // 手机号验证
   phone(_rule, value, callback) {
-    let reg = /^[1][0-9]{10}$/; //1开头的11位数字
+    // let reg = /^[1][0-9]{10}$/; //1开头的11位数字
     let reg = /^(\d|\+|-|\*|#){0,20}$/;
     if (!value || reg.test(value)) {
       callback();
