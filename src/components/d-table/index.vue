@@ -48,7 +48,8 @@
         @selection-change="selectionChange"
         @current-change="currentChange"
         @row-click = "rowClick"
-        style="width: 100%">
+        style="width: 100%"
+        ref="elTable">
             <slot></slot>
         </el-table>
         <el-pagination
@@ -165,8 +166,9 @@ export default {
       this.params.limit = limit;
       this.init(this.params);
     },
+    clearSelection(){
+      this.$refs.elTable.clearSelection();
+    }
   }
 };
 </script>
-<style>
-</style>
