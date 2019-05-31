@@ -25,7 +25,10 @@ ElementUI.Input.render = (function (old, defaultMaxLength) {
  * 修改默认值“close-on-click-modal”，默认情况下点击modal不关闭dialog
  */
 ElementUI.Dialog.props.closeOnClickModal.default = false
-
+ElementUI.Dialog.props.closeOnPressEscape.default = false
+ElementUI.Dialog.props.appendToBody.default = true
+ElementUI.Dialog.props.modalAppendToBody.default = true
+ElementUI.Dialog.props.top.default = '15px'
 
 /**
  * InputNumber控制精度时，小数位全是0的时候，没必要强制显示小数位
