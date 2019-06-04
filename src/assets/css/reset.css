@@ -83,7 +83,7 @@ a{
 /* 当el-form的label 位置居上的时候 缩小label与input的间距 */
 .el-form--label-top .el-form-item__label{ padding:0 !important}
 .el-form-item--small .el-form-item__content{height: 32px;}
-.el-input-group__prepend{ padding:0 10px}
+.el-input-group__append, .el-input-group__prepend{ padding:0 10px}
 /* 取消el-scrollbar属性 水平位置的滚动条 */
 .el-scrollbar__wrap{ overflow-x:hidden !important}
 
