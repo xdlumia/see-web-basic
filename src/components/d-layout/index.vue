@@ -130,6 +130,15 @@
             }
         },
         methods: {
+            // 获取公司logo
+            getCompanyLogo(){
+                this.$api.seeBaseinfoService.getCompanyLogo(null,this.$local.fetch("userInfo").syscode)
+                .then(res=>{
+                    let companyInfo = res.data || {}
+                    this.$store.commit('company/companyInfo',companyInfo)
+                    this.$local.save('company/companyInfo',companyInfo)
+                })
+            },
             initLoginInfo(){
                 // 读取用户信息
                 let userInfo = this.$local.fetch('userInfo')
