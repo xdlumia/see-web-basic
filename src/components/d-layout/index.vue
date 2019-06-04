@@ -59,6 +59,12 @@
     export default {
         name: "app",
         components: {},
+        props:{
+            logo:{
+                type:Boolean,
+                default:false
+            }
+        },
         data() {
             return {
                 loginForm: {
@@ -99,6 +105,10 @@
             }
         },
         created() {
+            // 获取logo信息
+            if(this.logo){
+              this.getCompanyLogo()  
+            }
             // 初始化用户信息
             this.initLoginInfo()
             // 版本更新
