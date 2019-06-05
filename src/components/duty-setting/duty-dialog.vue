@@ -297,6 +297,11 @@ export default {
             data = data.filter(
                 item => (item.isFlow && isOpenFlow) || !item.isFlow
             );
+            data.map(auth=>{
+                auth.children.sort((a,b)=>{
+                    return a.sort==b.sort?0:(a.sort<b.sort?-1:1);
+                });
+            })
             this.pageAuth = data;
             if (data[0]) {
                 this.pageAuthChildren = data[0].children;
