@@ -36,13 +36,12 @@
 -->
 <template>
     <div>
-      <div :style="{height:tableHeight}">
         <!-- 表格数据 -->
         <el-table
         highlight-current-row
         :data="tableDate"
         :border="border"
-        class="hfull"
+        :height="tableHeight"
         v-loading="loading"
         :size="size"
         @sort-change = "sortChange"
@@ -63,7 +62,6 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="tableCount">
         </el-pagination>
-      </div>
     </div>
 </template>
 <script>
