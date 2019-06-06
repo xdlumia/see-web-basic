@@ -6,10 +6,17 @@
 * @param params {Object}               ---接口参数;  默认{ page: 1, limit: 15 }
 * @param size {String}                 ---表格size 
 * @param paging {Boole}                ---是否显示分页   默认true
+* @param dragClass {string}             ---是否拖动 以及为列表中对象设置手柄，按住对象的拖动手柄才可以进行拖动  
+* @param rowClassName {string function} ---定义拖动的class. 返回参数要和dragClass相同. 具体使用方式参考element ui
 * @param slot                          ---slot
+* @fucnton dragEnd  ---拖动结束的参数. 返回拖动修改后的数据
+
 * @example 调用示例  接近element 原生表格.
 *   已经全局引入 不需要单独引入
     <d-table 
+    drag-class="drag"
+    row-class-name="drag"
+    @dragEnd="dragEnd"
     api="bizSystemService.getEmployeeList"
     :params="queryForm"
     size="small">
@@ -27,7 +34,7 @@
             label="角色类型"
             width="120">
             <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+            <el-button @click="dragClassClick(scope.row)" type="text" size="small">查看</el-button>
             <el-button type="text" size="small">编辑</el-button>
         </template>
         </d-table-column>
@@ -38,8 +45,11 @@
     <div>
         <!-- 表格数据 -->
         <el-table
+        row-key="id"
+        :class="dragClass"
+        :row-class-name="rowClassName"
         highlight-current-row
-        :data="tableDate"
+        :data="tableData"
         :border="border"
         :height="tableHeight"
         v-loading="loading"
@@ -65,6 +75,7 @@
     </div>
 </template>
 <script>
+import Sortable from 'sortablejs' 
 export default {
   props: {
     //请求接口
@@ -89,17 +100,31 @@ export default {
     // 分页
     paging: {
       default: true
-    }
+    },
+    dragClass:{
+      default: 'elTableDragDefault'
+    },
+    // 自定义行class
+    rowClassName: {
+      default:function(){
+        return this.dragClass
+      }
+    },
   },
   data() {
     return {
       tableCount: 0, //总条数
-      tableDate: [], //表格数据
+      tableData: [], //表格数据
       loading: false, //loading动画
     };
   },
   created() {
     this.init(this.params);
+    this.$nextTick(() => {
+      if(this.dragClass !== 'elTableDragDefault'){
+        this.rowDrop()
+      }
+    })
   },
   computed: {
     // 实时更新server
@@ -119,7 +144,7 @@ export default {
       this.loading = true;
       this.$api[this.server][this.url](params)
         .then(res => {
-          this.tableDate = res.data || [];
+          this.tableData = res.data || [];
           // 如果有分页
           if(this.paging){
             this.tableCount = res.count || 0;
@@ -162,13 +187,28 @@ export default {
       this.params.page = page;
       this.init(this.params);
     },
+    // 修改当前条数
     limitChange(limit){
       this.params.limit = limit;
       this.init(this.params);
     },
+    // 清空多选
     clearSelection(){
       this.$refs.elTable.clearSelection();
-    }
+    },
+    // 行拖动
+    rowDrop () {
+        const tbody = document.querySelector(`.${this.dragClass} .el-table__body-wrapper tbody`)
+        const _this = this
+        Sortable.create(tbody, {
+          handle: this.dragClass=='elTableDragDefault'?'':`.${this.dragClass}`,
+          onEnd ({ newIndex, oldIndex }) {
+            const currRow = _this.tableData.splice(oldIndex, 1)[0]
+            _this.tableData.splice(newIndex, 0, currRow)
+            _this.$emit('dragEnd',_this.tableData)
+          }
+      })
+    },
   }
 };
 </script>
