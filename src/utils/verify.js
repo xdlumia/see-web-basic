@@ -1,6 +1,6 @@
 import _Object$keys from 'babel-runtime/core-js/object/keys';
 import _getIterator from 'babel-runtime/core-js/get-iterator';
-/**
+/** 
  * @desc 公共验证方法
  * @author web-王晓冬
  * @date 2018年9月18号
