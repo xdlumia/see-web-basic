@@ -39,14 +39,18 @@ const createApi = (config, serviceName) => {
               cancelSources.push(source)
             }
 
-            let serviceUrl = baseURL[serviceName]
+            let serviceUrl = ''
 
-            if (!serviceUrl) {
-              let msg = `serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`;
-              if (!useMock) {
-                throw new Error(msg)
-              } else {
-                console.error(msg)
+            if (!useMock) {
+              serviceUrl = baseURL[serviceName]
+
+              if (!serviceUrl) {
+                throw new Error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
+              }
+            } else {
+              // 不使用mock的时候也检查下地址，提前校验
+              if (!baseURL[serviceName]) {
+                console.error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
               }
             }
 
