@@ -32,7 +32,8 @@
     "axios": "^0.18.0",
     "element-ui": "^2.4.7",
     "moment": "^2.22.2",
-    "fingerprintjs2": "^1.8.1"
+    "fingerprintjs2": "^1.8.1",
+    "vuedraggable": "^2.19.0"
   },
   "browserslist": [
     "> 1%",
