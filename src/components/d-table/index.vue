@@ -52,6 +52,7 @@
         :data="tableData"
         :border="border"
         :height="tableHeight"
+        :style="{height:tableHeight}"
         v-loading="loading"
         :size="size"
         @sort-change = "sortChange"
