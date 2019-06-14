@@ -50,6 +50,7 @@
         :row-class-name="rowClassName"
         highlight-current-row
         :data="tableData"
+        :reserve-selection="true"
         :border="border"
         :height="tableHeight"
         :style="{height:tableHeight}"
