@@ -142,7 +142,7 @@
         methods: {
             // 获取公司logo
             getCompanyLogo(){
-                this.$api.seeBaseinfoService.getCompanyLogo(null,this.$local.fetch("userInfo").syscode)
+                this.$api.seeBaseinfoService.logoGetCompanyLogo(null,this.$local.fetch("userInfo").syscode)
                 .then(res=>{
                     let companyInfo = res.data || {}
                     this.$store.commit('company/companyInfo',companyInfo)
