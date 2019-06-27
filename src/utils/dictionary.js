@@ -48,42 +48,52 @@ let findInArr = function (arr, key, idKey, valueKey) {
 }
 
 export default {
-  methods: {
-    dictionaryOptions (dicName) {
-      if (typeof dicName !== 'string') {
-        console.error('The param [key] of method [dictionaryOptions]  must be string!')
-        return []
-      }
-
-      return getDictionaryArr(dicName)
-    }
-  },
-  filters: {
-    dictionary:function (key, dicName, idKey = 'code', valueKey = 'content') {
-      let dictionaryArr
-
-      if (typeof dicName === 'string') {
-        dictionaryArr = getDictionaryArr(dicName)
-      } else {
-        if (Array.isArray(dicName)) {
-          dictionaryArr = dicName
-        } else {
-          console.error('The param [key] of filter [dictionary]  must be string!')
-          return
+  mixin: {
+    methods: {
+      dictionaryOptions (dicName) {
+        if (typeof dicName !== 'string') {
+          console.error('The param [key] of method [dictionaryOptions]  must be string!')
+          return []
         }
-      }
 
-      return findInArr(dictionaryArr, key, idKey, valueKey)
+        return getDictionaryArr(dicName)
+      }
+    },
+    filters: {
+      dictionary:function (key, dicName, idKey = 'code', valueKey = 'content') {
+        let dictionaryArr
+
+        if (typeof dicName === 'string') {
+          dictionaryArr = getDictionaryArr(dicName)
+        } else {
+          if (Array.isArray(dicName)) {
+            dictionaryArr = dicName
+          } else {
+            console.error('The param [key] of filter [dictionary]  must be string!')
+            return
+          }
+        }
+
+        return findInArr(dictionaryArr, key, idKey, valueKey)
+      }
     }
   },
-  // 供外部直接调用的,自定义字典
-  defineDictionary (dicName, arr) {
-    Vue.util.defineReactive(dictionaryCache, dicName, arr)
-  },
-  // 供外部直接调用的,当字典表发生变化时，刷新缓存
-  refreshCache(dicName) {
-    if (dictionaryCache.hasOwnProperty(dicName)) {
-      delete dictionaryCache[dicName]
+  dictionaryUtil: {
+    // 供外部直接调用的,自定义字典
+    defineDictionary (dicName, arr) {
+      Vue.util.defineReactive(dictionaryCache, dicName, arr)
+    },
+    // 供外部直接调用的,当字典表发生变化时，刷新缓存
+    refreshCache(dicName) {
+      if (dictionaryCache.hasOwnProperty(dicName)) {
+        delete dictionaryCache[dicName]
+      }
+    },
+    // 供外部直接调用的,清空缓存
+    clearCache() {
+      Object.keys(dictionaryCache).forEach((dicName) => {
+        delete dictionaryCache[dicName]
+      })
     }
   }
 }

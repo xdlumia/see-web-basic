@@ -12,7 +12,7 @@ import filters from './filters.js';
 import local from './localStorage.js';
 import dictionary from './dictionary';
 import directives from './directives';
-import serversDate from './serversDate';
+import './serversDate';
 import watermark from './watermark';
 import components from '../components';
 import buttonAuthority from './button-authority';
@@ -27,7 +27,7 @@ export default {
     vm.prototype.$pickerOptionsRange = pickerOptionsRange;
     vm.prototype.$dateOptionsAfter = dateOptionsAfter;
 
-    vm.mixin(dictionary);
+    vm.mixin(dictionary.mixin);
     vm.mixin(directives);
     vm.mixin(watermark);
     vm.mixin(components);
