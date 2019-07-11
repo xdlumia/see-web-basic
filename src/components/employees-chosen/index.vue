@@ -21,13 +21,13 @@
     trigger="click">
     <div class="label-filter p5 pt0">
       <el-container class="employees-chosen">
-        <el-header v-if="multiple" class="selected-employees">
+        <el-header v-if="multiple" class="selected-employees d-auto-y">
           选中的人员:
           <el-tag
             v-for="tag in partSelectedEmployees"
             :key="tag"
             size="mini"
-            class="mr10"
+            class="mr10 mb5"
             :closable="isEdit || !storeSelectedEmployees.includes(tag) "
             @close="handleCloseTag(tag)"
             type="primary">
