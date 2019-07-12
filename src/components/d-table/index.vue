@@ -52,7 +52,6 @@
         :data="tableData"
         :reserve-selection="true"
         :border="border"
-        :height="tableHeight"
         :style="{height:tableHeight}"
         v-loading="loading"
         :size="size"
