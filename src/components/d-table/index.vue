@@ -65,10 +65,10 @@
         </el-table>
         <el-pagination
         v-if="paging"
-        @size-change="limitChange"
-        @current-change="pageChange"
+        @size-change="init(params)"
+        @current-change="init(params)"
         :current-page.sync="params.page"
-        :page-size="params.limit"
+        :page-size.sync="params.limit"
         :page-sizes="[10, 15, 20, 30, 50]"
         layout="total, sizes, prev, pager, next, jumper"
         :total="tableCount">
@@ -184,15 +184,15 @@ export default {
       this.$emit('sort-change',column, prop, order)
     },
     // 表格翻页
-    pageChange(page) {
-      this.params.page = page;
-      this.init(this.params);
-    },
-    // 修改当前条数
-    limitChange(limit){
-      this.params.limit = limit;
-      this.init(this.params);
-    },
+    // pageChange(page) {
+    //   this.params.page = page;
+    //   this.init(this.params);
+    // },
+    // // 修改当前条数
+    // limitChange(limit){
+    //   this.params.limit = limit;
+    //   this.init(this.params);
+    // },
     // 清空多选
     clearSelection(){
       this.$refs.elTable.clearSelection();
