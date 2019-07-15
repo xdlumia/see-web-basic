@@ -59,7 +59,7 @@
         @selection-change="selectionChange"
         @current-change="currentChange"
         @row-click = "rowClick"
-        style="width: 100%:overflow-y:auto"
+        style="width: 100%;overflow-y:auto"
         ref="elTable">
             <slot></slot>
         </el-table>
