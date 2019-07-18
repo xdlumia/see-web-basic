@@ -13,6 +13,7 @@ import formCard from './form-card';
 import dLayout from './d-layout';
 import treeSelect from './tree-select';
 import dutySetting from './duty-setting';
+import authButton from './auth-button';
 
 export default {
   components: {
@@ -25,6 +26,7 @@ export default {
     formCard: formCard,
     dLayout: dLayout,
     treeSelect: treeSelect,
-    dutySetting
+    dutySetting: dutySetting,
+    authButton,
   }
 };
