@@ -40,6 +40,10 @@ const filterHtml = (num) => {
     .toString()
     .replace(/^\d+/, (m) => m.replace(/(?=(?!^)(\d{3})+$)/g, ','))
 }
+const pennyToYuan = (val) => {
+  let value = Number(val) || 0
+  return value.toFixed(2)
+}
 
 /**
  * @desc 人员名称显示
@@ -73,5 +77,6 @@ export default {
   timeToStr,
   thousandBitSeparator,
   filterHtml,
-  userName
+  userName,
+  pennyToYuan
 }
