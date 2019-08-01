@@ -39,18 +39,18 @@ export default {
     //     }
         
         // 获取自定义指令传过来的方法
-        let f = typeof binding.value === 'function'?binding.value:binding.value.f
-        el.addEventListener('click',function(){
-            if (isAuth) {
-                alert('需要付费')
-            } else {
-                let isArray = binding.value.p && binding.value.p instanceof Array
-                let params = isArray?binding.value.p:[binding.value.p]
-                f(...params)
-            }
-        },false)
-      }
-    },
+    //     let f = typeof binding.value === 'function'?binding.value:binding.value.f
+    //     el.addEventListener('click',function(){
+    //         if (isAuth) {
+    //             alert('需要付费')
+    //         } else {
+    //             let isArray = binding.value.p && binding.value.p instanceof Array
+    //             let params = isArray?binding.value.p:[binding.value.p]
+    //             f(...params)
+    //         }
+    //     },false)
+    //   }
+    // },
      /**自定义拖拽指令
      * @author web-王晓冬
      * @date 2018年7月26日

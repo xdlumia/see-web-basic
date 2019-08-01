@@ -18,5 +18,22 @@ export default {
 
       return generateButtonCodes(authorityBtn)
     }
+  },
+  methods:{
+    /**
+     * 获取权限下数量限制
+     * @param {String} sourceCode 
+     */
+    getSourceMaxNum(sourceCode){
+      let maxNum;
+      let sourceMaxNumData = this.$local.fetch('sourceMaxNumData') || []
+      sourceMaxNumData.some(item=>{
+        if(item.sourceCode==sourceCode){
+          maxNum=item.maxNum;
+          return true;
+        }
+      })
+      return maxNum;
+    }
   }
 }
