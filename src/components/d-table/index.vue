@@ -47,6 +47,7 @@
         <el-table
         row-key="id"
         :class="dragClass"
+        :height="tableHeight"
         :row-class-name="rowClassName"
         highlight-current-row
         :data="tableData"
@@ -59,7 +60,7 @@
         @selection-change="selectionChange"
         @current-change="currentChange"
         @row-click = "rowClick"
-        style="width: 100%;overflow-y:auto"
+        style="width: 100%;"
         ref="elTable">
             <slot></slot>
         </el-table>
@@ -111,6 +112,10 @@ export default {
         return this.dragClass
       }
     },
+    // 自动调用接口请求
+    autoInit:{
+      default:true,
+    }
   },
   data() {
     return {
@@ -120,12 +125,18 @@ export default {
     };
   },
   created() {
-    this.init(this.params);
+    if(this.autoInit){
+      this.init(this.params);
+    }
     this.$nextTick(() => {
       if(this.dragClass !== 'elTableDragDefault'){
         this.rowDrop()
       }
     })
+    window.addEventListener('resize',this.resizeTable)
+  },
+  destroyed(){
+    window.removeEventListener('reset',this.resizeTable)
   },
   computed: {
     // 实时更新server
@@ -141,6 +152,12 @@ export default {
     }
   },
   methods: {
+    resizeTable(){
+      this.$nextTick(()=>{
+        this.$refs.elTable.resizeListener()
+        this.$refs.elTable.doLayout()
+      })
+    },
     init(params) {
       this.loading = true;
       this.$api[this.server][this.url](params)
@@ -155,6 +172,7 @@ export default {
         .finally(() => {
           //关闭loading
           this.loading = false; 
+          this.resizeTable();
         });
     },
     // 重新请求
