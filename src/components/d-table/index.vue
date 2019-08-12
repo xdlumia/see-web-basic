@@ -135,7 +135,7 @@ export default {
     })
     window.addEventListener('resize',this.resizeTable)
   },
-  destroyed(){
+  beforeDestroy(){
     window.removeEventListener('reset',this.resizeTable)
   },
   computed: {
