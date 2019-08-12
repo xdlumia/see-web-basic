@@ -154,8 +154,10 @@ export default {
   methods: {
     resizeTable(){
       this.$nextTick(()=>{
-        this.$refs.elTable.resizeListener()
-        this.$refs.elTable.doLayout()
+        if(this.$refs.elTable){
+          this.$refs.elTable.resizeListener()
+          this.$refs.elTable.doLayout()
+        }
       })
     },
     init(params) {
