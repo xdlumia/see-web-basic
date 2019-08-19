@@ -295,7 +295,7 @@ export default {
             });
             // 过滤流程
             data = data.filter(
-                item => (item.isFlow && isOpenFlow) || !item.isFlow
+                item => ((item.isFlow && isOpenFlow) || !item.isFlow) && this.authorityButtons.includes(item.objauthCode)
             );
             data.map(auth=>{
                 auth.children.sort((a,b)=>{
