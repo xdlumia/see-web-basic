@@ -4,7 +4,8 @@
         <el-dialog
             title="更新提示"
             :visible.sync="versionVisible"
-            width="600px">
+            v-dialogDrag
+            width="744px">
             <view-pic>
                 <div class="version-content mb10">
                     <h3>{{versionData.title}}</h3>
@@ -15,13 +16,22 @@
                     <time class="f12">更新时间:{{versionData.updatedDate | timeToStr('YYYY-MM-DD H:mm:ss')}}</time>
                 </div>
             </view-pic>
-            <div class="ac">
+            <div class="a-d-box" v-if="versionData.advertisingList&&versionData.advertisingList.length">
+                <el-carousel height="230px" :autoplay="true" arrow="none" :interval="5000">
+                    <el-carousel-item v-for="(item,index) of versionData.advertisingList" :key="index">
+                      <a class="a-d-link" target="_blank" :href="item.link">
+                          <img class="a-d-img" :src="item.picUrl" />
+                      </a>
+                    </el-carousel-item>
+                </el-carousel>
+            </div>
+            <!-- <div class="ac">
                 <el-button
                     type="primary"
                     size="small"
                     @click="versionVisible = false"
                 >我知道了</el-button>
-            </div>
+            </div> -->
         </el-dialog>
         <div class="lock-screen lock-screen-bg" v-if="isLockScreen" :class="{active:isLogin}"></div>
         <div class="lock-screen lock-screen-main" v-if="isLockScreen">
@@ -271,11 +281,24 @@
 <style scope lang="scss" >
     .version-content .details {
         font-size: 14px;
+        max-height: 180px;
+        overflow-y: auto;
     }
     .version-content .details img {
         display: inline-block;
         margin-right: 2px;
         width: 240px;
+    }
+    .a-d-box{
+        border-top: 1px solid #ededed;
+        padding-top: 14px;
+        .a-d-link{
+            .a-d-img{
+                object-fit: cover;
+                width: 700px;
+                height: 230px;
+            }
+        }
     }
     .lock-screen{
         position:fixed;
