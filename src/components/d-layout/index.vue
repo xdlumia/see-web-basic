@@ -247,6 +247,9 @@
             submitLogin(){
                 this.errotTips = ''
                 this.loginForm.finger = localStorage.finger
+                if(this.loginForm.syscode=='asystem'&&this.isMarket){
+                    this.loginForm.isMarket=true;
+                }
                 this.$api.systemService.login(this.loginForm)
                 .then(res=>{
                     let token = res.data.token || ''
