@@ -1,3 +1,10 @@
+/*
+ * @Author: web.王晓冬
+ * @Date: 2019-09-26 10:34:23
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-09-26 11:12:32
+ * @Description: file content
+ */
 <template>
     <div>
         <slot></slot>
@@ -33,7 +40,7 @@
                 >我知道了</el-button>
             </div> -->
         </el-dialog>
-        <div class="lock-screen lock-screen-bg" v-if="isLockScreen" :class="{active:isLogin}"></div>
+        <div class="lock-screen lock-screen-bg" v-show="isLockScreen" :class="{active:isLogin}"></div>
         <div class="lock-screen lock-screen-main" v-if="isLockScreen">
             <div class="lock-current-time" :class="{active:isLogin}">
                 <time class="lock-time">{{currentTime | timeToStr('hh:mm')}}</time>
@@ -64,12 +71,15 @@
     import Fingerprint2 from 'fingerprintjs2'
     import moment from 'moment' // 日期格式化
     import { Base64 } from 'js-base64';
-    let lockScreenOutTime  = window.g.lockScreenOutTime
+    // let lockScreenOutTime  = window.g.lockScreenOutTime
     moment.locale('zh-cn')
     export default {
         name: "app",
         components: {},
         props:{
+            lockOutTime:{
+                default:15,
+            },
             logo:{
                 type:Boolean,
                 default:false
@@ -91,7 +101,7 @@
                 },
                 isLockScreen:false, //是否锁屏
                 isLogin:false, // 是否登录
-                outTime:lockScreenOutTime || 15, // 不操作锁屏时间 /分钟
+                // outTime:lockScreenOutTime || 15, // 不操作锁屏时间 /分钟
                 currentTime: 0,
                 errotTips:'', //登陆错误提示
                 timer: null  // 定时器名称
@@ -115,6 +125,13 @@
             }
         },
         created() {
+            addEventListener('keydown',(e)=>{
+                if (e.keyCode == 76 && e.altKey && e.altKey) {  
+                    this.isLockScreen = true
+                    this.loginForm.pwd = ''
+                }
+
+            });
             // 获取logo信息
             if(this.logo){
               this.getCompanyLogo()  
@@ -193,7 +210,7 @@
                      * 当(当前时间 - 上次操作的时间)  = 设置的锁屏时间
                      * 并且当前没有锁屏的情况下锁屏
                      */
-                    if ((currentTime - localTime) >= this.outTime * 60 * 1000  && !this.isLockScreen) {
+                    if ((currentTime - localTime) >= this.lockOutTime * 60 * 1000  && !this.isLockScreen) {
                       // 锁屏
                        this.isLockScreen = true
                        //  退出条件触发两秒后再退出登录
