@@ -23,7 +23,8 @@ class APIConfig {
   registry(apis, compatible) {
     for (let name in apis) {
       if (apis.hasOwnProperty(name)) {
-        this[name] = compatible ? createRequestWrap(apis[name]) : apis[name]
+        let apiMap = compatible ? createRequestWrap(apis[name]) : apis[name]
+        this[name] = Object.assign(this[name]||{},apiMap);
       }
     }
   }
