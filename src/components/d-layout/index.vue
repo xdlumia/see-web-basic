@@ -248,7 +248,7 @@
                 };
             },
             refreshUserToken(){
-                if(this.lastRefreshTime<+new Date-(10*60*1000)){
+                if(this.lastRefreshTime<(+new Date-((parseFloat(window.g.refreshTokenTime)||5)*60*1000))){
                     // 十分钟后刷新用户token
                     if(localStorage.token&&localStorage.finger){
                         this.lastRefreshTime = +new Date;
