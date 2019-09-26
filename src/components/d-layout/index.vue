@@ -254,7 +254,7 @@
                         this.lastRefreshTime = +new Date;
                         if(this.$api.systemService.loginRefreshToken){
                             this.$api.systemService.loginRefreshToken()
-                        }else if(!process.env.production){
+                        }else if(process.env.NODE_ENV!='production'){
                             console.warn(`Your systemService don't have loginRefreshToken API config, please check your systemService.js!`)
                         }
                     }
