@@ -104,7 +104,8 @@
                 // outTime:lockScreenOutTime || 15, // 不操作锁屏时间 /分钟
                 currentTime: 0,
                 errotTips:'', //登陆错误提示
-                timer: null  // 定时器名称
+                timer: null,  // 定时器名称
+                lastRefreshTime:+new Date,
             };
         },
         computed: {
@@ -234,6 +235,7 @@
                         localStorage.setItem("lockScreenTime", new Date().getTime());
                         // 如果当前是锁屏 并且没有登录框的时候 操作键盘出现登录框
                         this.showLoginBox()
+                        this.refreshUserToken()
                 };
                 //监听键盘
                 document.onkeydown = () => {
@@ -241,8 +243,22 @@
                         localStorage.setItem("lockScreenTime", new Date().getTime());
                         // 如果当前是锁屏 并且没有登录框的时候 操作键盘出现登录框
                         this.showLoginBox()
+                        this.refreshUserToken()
 
                 };
+            },
+            refreshUserToken(){
+                if(this.lastRefreshTime<+new Date-(10*60*1000)){
+                    // 十分钟后刷新用户token
+                    if(localStorage.token&&localStorage.finger){
+                        this.lastRefreshTime = +new Date;
+                        if(this.$api.systemService.loginRefreshToken){
+                            this.$api.systemService.loginRefreshToken()
+                        }else if(!process.env.production){
+                            console.warn(`Your systemService don't have loginRefreshToken API config, please check your systemService.js!`)
+                        }
+                    }
+                }
             },
             showLoginBox(){
                 if(this.isLockScreen && !this.isLogin){
