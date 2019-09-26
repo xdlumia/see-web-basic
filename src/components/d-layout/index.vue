@@ -126,10 +126,13 @@
             }
         },
         created() {
-            addEventListener('keydown',(e)=>{
-                if (e.keyCode == 76 && e.altKey && e.altKey) {  
+            addEventListener('keyup',(e)=>{
+                if (e.keyCode == 76 && e.altKey && e.altKey && !this.isLockScreen) { 
                     this.isLockScreen = true
                     this.loginForm.pwd = ''
+                    this.logout().finally(()=>{
+                        localStorage.token = ''
+                    })
                 }
 
             });
@@ -216,8 +219,9 @@
                        this.isLockScreen = true
                        //  退出条件触发两秒后再退出登录
                        setTimeout(()=>{
-                           localStorage.token = ''
-                        //    this.logout()
+                           this.logout().finally(()=>{
+                               localStorage.token = ''
+                           })
                        },1000);
 
                        this.loginForm.pwd = ''
@@ -298,10 +302,7 @@
             },
             // 退出 暂未使用
             logout(){
-                this.$api.systemService.logout()
-                .then(res=>{
-                    // console.log('退出登录成功')
-                })
+                return this.$api.systemService.logout()
             },
             // 退出到登录页
             logoutLogin(){
