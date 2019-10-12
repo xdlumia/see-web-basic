@@ -254,7 +254,7 @@
             refreshUserToken(){
                 if(this.lastRefreshTime<(+new Date-((parseFloat(window.g.refreshTokenTime)||5)*60*1000))){
                     // 十分钟后刷新用户token
-                    if(localStorage.token&&localStorage.finger){
+                    if(localStorage.token&&localStorage.finger&&!this.isLockScreen){
                         this.lastRefreshTime = +new Date;
                         if(this.$api.systemService.loginRefreshToken){
                             this.$api.systemService.loginRefreshToken()
@@ -291,6 +291,7 @@
                 .then(res=>{
                     let token = res.data.token || ''
                     localStorage.token = token
+                    localStorage.finger = this.loginForm.finger
                     // axios.defaults.headers.token = localStorage.token
                     this.isLogin = false
                     this.isLockScreen = false
