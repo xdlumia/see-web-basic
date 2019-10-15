@@ -1,3 +1,10 @@
+/*
+ * @Author: web.王晓冬
+ * @Date: 2019-08-01 11:54:35
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-09-30 09:47:17
+ * @Description: file content
+ */
 
 export default {
   /**自定义拖拽指令
