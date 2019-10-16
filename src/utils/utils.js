@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-10-15 10:28:51
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-15 10:52:49
+ * @LastEditTime: 2019-10-15 11:55:32
  * @Description: 工具集
  */
 
@@ -13,10 +13,12 @@ const isEmptyObject = (obj) => {
     }
     return true
 }
+
 // 判断是否是window对象
 const isWindow = (obj)=>{
     return obj != null && obj === obj.window;
 }
+
 // 判断数据类型
 const type = (obj) => {
     let class2type = {};
@@ -29,6 +31,12 @@ const type = (obj) => {
     }
     return typeof obj === 'object' || typeof obj === 'function' ? class2type[Object.prototype.toString.call(obj)] || 'object' : typeof obj;
 }
+
+// 判断是不是 DOM 元素
+isElement = function(obj) {
+    return !!(obj && obj.nodeType === 1);
+};
+
 export default {
     isEmptyObject,
     isWindow,
