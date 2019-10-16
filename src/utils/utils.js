@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-10-15 10:28:51
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-15 11:55:32
+ * @LastEditTime: 2019-10-16 09:42:57
  * @Description: 工具集
  */
 
@@ -33,8 +33,20 @@ const type = (obj) => {
 }
 
 // 判断是不是 DOM 元素
-isElement = function(obj) {
+const isElement = (obj) => {
     return !!(obj && obj.nodeType === 1);
+};
+
+// 对象深拷贝
+const deepCopy = (obj) => {
+    if(typeof obj !=='object') return;
+    var newObj = obj instanceof Array ? [] : {};
+    for (var key in obj){
+        if(Object.hasOwnProperty(key)){
+            newObj[key] = typeof obj[key] === 'object' ? deepCopy(obj[key]) : obj[key];
+        }
+    }
+    return newObj
 };
 
 export default {
