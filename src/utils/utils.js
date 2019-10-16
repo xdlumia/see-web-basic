@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-10-15 10:28:51
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-16 09:42:57
+ * @LastEditTime: 2019-10-16 09:55:35
  * @Description: 工具集
  */
 
@@ -39,10 +39,10 @@ const isElement = (obj) => {
 
 // 对象深拷贝
 const deepCopy = (obj) => {
-    if(typeof obj !=='object') return;
+    if (obj === null || typeof obj !== 'object') return obj;
     var newObj = obj instanceof Array ? [] : {};
     for (var key in obj){
-        if(Object.hasOwnProperty(key)){
+        if(obj.hasOwnProperty(key)){
             newObj[key] = typeof obj[key] === 'object' ? deepCopy(obj[key]) : obj[key];
         }
     }
