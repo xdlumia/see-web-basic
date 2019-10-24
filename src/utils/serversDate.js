@@ -1,22 +1,32 @@
-/** 获取服务时间
- * @author web-王晓冬
- * @date 2019年5月30日
- *
- *  提供一个获取服务器时间的方法
- *  let nowDate = Date.serversDate()
- **/
+/*
+ * @Author: web.王晓冬
+ * @Date: 2019-06-14 18:34:55
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-10-24 17:51:48
+ * @Description: 提供一个获取服务器时间的方法  let nowDate = Date.serversDate()
+ */
 
 import axios from 'axios';
 
-var apiUrl = window.g.ApiUrl;
+
+let baseURL = window.g && window.g.ApiUrl?window.g.ApiUrl : {}
+
+if(!baseURL.bizSystemService){
+    try{
+        baseURL.bizSystemService = apisUrl + 'biz-system-service'
+    }
+    catch(err){
+        baseURL.bizSystemService = '/apis/' + 'biz-system-service'
+    }
+}
 var t = new Date();
 function getServersDate() {
-  axios.get(apiUrl.bizSystemService + '/serve/getServerTime').then(function (res) {
+  axios.get(baseURL.bizSystemService + '/serve/getServerTime').then(function (res) {
     t = res.data || new Date();
   });
 }
 // Date.serversDate = async function () {
-//   await axios.get(apiUrl.bizSystemService + '/serve/getServerTime').then(function (res) {
+//   await axios.get(baseURL.bizSystemService + '/serve/getServerTime').then(function (res) {
 //     t = res.data || new Date(); 
 //   });
 //   return new Date(t);

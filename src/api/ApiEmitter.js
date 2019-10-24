@@ -2,17 +2,22 @@
  * @Author: web.王晓冬
  * @Date: 2019-06-14 18:34:55
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 17:00:47
+ * @LastEditTime: 2019-10-24 17:41:41
  * @Description: api配置文件
  */
 import Api from './request'
 import axios from 'axios';
 
-let baseURL = window.g.ApiUrl;
+let baseURL = window.g && window.g.ApiUrl?window.g.ApiUrl : {}
 let reg = /\{[\S]*?\}/g;
 let mockKey = '__mockAddress';
 let CancelToken = axios.CancelToken;
-window.BASE_URL = apisUrl || '/apis/'
+try{
+    window.BASE_URL = apisUrl || '/apis/'
+}
+catch(err){
+    window.BASE_URL = '/apis/'
+}
 
 const createApi = (config, serviceName) => {
     let result = {};
@@ -50,9 +55,11 @@ const createApi = (config, serviceName) => {
             let serviceUrl = ''
 
             if (!useMock) {
+                // 如果在ipconfig添加此配置
                 if(baseURL[serviceName]){
                     serviceUrl = baseURL[serviceName]
                 }else{
+                    // 如果在ipconfig没有添加此配置 自动获取配置项
                     serviceUrl = window.BASE_URL + toLine(serviceName)
                 }
                 if (!serviceUrl) {
