@@ -1,3 +1,10 @@
+/*
+ * @Author: web.王晓冬
+ * @Date: 2019-05-14 17:56:26
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-10-24 18:31:52
+ * @Description: file content
+*/
 <!--公用组件：人员选择组件
 /**
 * @author web-闫超
@@ -37,7 +44,7 @@
 <script>
   import axios from 'axios'
 
-  let baseURL = window.g.ApiUrl
+  let baseURL = window.g && window.g.ApiUrl?window.g.ApiUrl : {}
 
   export default {
     props: {
