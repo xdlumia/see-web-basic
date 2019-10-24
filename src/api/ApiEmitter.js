@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-06-14 18:34:55
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 17:41:41
+ * @LastEditTime: 2019-10-24 19:21:33
  * @Description: api配置文件
  */
 import Api from './request'
@@ -18,7 +18,10 @@ try{
 catch(err){
     window.BASE_URL = '/apis/'
 }
-
+// 驼峰转中划线
+function toLine(name) {
+    return name.replace(/([A-Z])/g,"-$1").toLowerCase();
+  }
 const createApi = (config, serviceName) => {
     let result = {};
     let mockAddress = config[mockKey]
