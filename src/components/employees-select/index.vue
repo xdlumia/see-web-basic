@@ -1,22 +1,17 @@
 /*
- * @Author: web.王晓冬
- * @Date: 2019-05-14 17:56:26
+* @Author: web-闫超
+* @Date: 2019-05-14 17:56:26
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 18:31:52
- * @Description: file content
-*/
-<!--公用组件：人员选择组件
-/**
-* @author web-闫超
+ * @LastEditTime: 2019-10-24 18:33:31
+* @Description: 人员选择组件
 * @date 2018年7月19日
 * @param v-model {String}                  ---数据模型绑定
 * @param multiple {Boolean} [isObj]        ---是否多选
 * @param closeOnSelect {Boolean} [label]   ---单选时，选择后是否立即关闭页面
 * @example 调用示例
 *    <employees-select v-model="followInfoTags">
-     </employees-select>
+    </employees-select>
 **/
--->
 
 <template>
   <el-select
