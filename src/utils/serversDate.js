@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-06-14 18:34:55
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 17:51:48
+ * @LastEditTime: 2019-10-24 18:20:30
  * @Description: 提供一个获取服务器时间的方法  let nowDate = Date.serversDate()
  */
 
@@ -34,7 +34,7 @@ function getServersDate() {
 Date.serversDate = function () {
   return new Date(t)
 };
-if(apiUrl.bizSystemService){
+// if(baseURL.bizSystemService){
   // 获取服务器时间
   getServersDate();
   // 给服务器时间每隔1秒递增1秒时间
@@ -45,4 +45,4 @@ if(apiUrl.bizSystemService){
   var serverTimer = setInterval(function () {
     getServersDate();
   }, 30000);
-}
+// }
