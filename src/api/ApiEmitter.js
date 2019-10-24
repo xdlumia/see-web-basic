@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-06-14 18:34:55
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 16:40:26
+ * @LastEditTime: 2019-10-24 17:00:47
  * @Description: api配置文件
  */
 import Api from './request'
@@ -12,7 +12,7 @@ let baseURL = window.g.ApiUrl;
 let reg = /\{[\S]*?\}/g;
 let mockKey = '__mockAddress';
 let CancelToken = axios.CancelToken;
-window.BASE_URL = apis || '/apis/'
+window.BASE_URL = apisUrl || '/apis/'
 
 const createApi = (config, serviceName) => {
     let result = {};

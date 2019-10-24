@@ -1,3 +1,10 @@
+/*
+ * @Author: web.王晓冬
+ * @Date: 2019-10-24 16:45:27
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-10-24 17:01:27
+ * @Description: request
+ */
 import axios from 'axios'
 import { Message } from 'element-ui'
 import QS from 'querystring'
@@ -22,6 +29,9 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use(response => {
   const res = response.data;
+  if(res.code === undefined){
+      return res
+  }
   if (res.code == 402) {
     if(window.router && router.currentRoute.fullPath != '/login' && !router.currentRoute.query.token){
       localStorage.loginRedirect = router.currentRoute.fullPath
