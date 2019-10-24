@@ -1,8 +1,15 @@
+/*
+ * @Author: web.王晓冬
+ * @Date: 2019-08-01 11:54:35
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-10-24 18:21:33
+ * @Description: file content
+ */
 import moment from 'moment' // 日期格式化
 import axios from 'axios'
 import Vue from 'vue'
 
-let baseURL = window.g.ApiUrl
+let baseURL = window.g && window.g.ApiUrl?window.g.ApiUrl : {}
 
 /**
  * @desc 时间方法

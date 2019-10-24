@@ -1,3 +1,10 @@
+/*
+ * @Author: web.王晓冬
+ * @Date: 2019-05-14 17:56:26
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-10-24 18:27:16
+ * @Description: file content
+ */
 
 /** 前台水印方法
  * @author web-王晓冬
@@ -12,7 +19,7 @@
 import api from '../api';
 import Vue from 'vue';
 import { Base64 } from 'js-base64';
-let baseURL = window.g.ApiUrl
+let baseURL = window.g && window.g.ApiUrl?window.g.ApiUrl : {}
 
 var watermarkCache = {};
 var getWatermark = function(watermarkType) {
