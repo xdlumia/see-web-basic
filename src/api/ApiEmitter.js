@@ -1,3 +1,10 @@
+/*
+ * @Author: web.王晓冬
+ * @Date: 2019-06-14 18:34:55
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-10-24 16:40:26
+ * @Description: api配置文件
+ */
 import Api from './request'
 import axios from 'axios';
 
@@ -5,6 +12,7 @@ let baseURL = window.g.ApiUrl;
 let reg = /\{[\S]*?\}/g;
 let mockKey = '__mockAddress';
 let CancelToken = axios.CancelToken;
+window.BASE_URL = apis || '/apis/'
 
 const createApi = (config, serviceName) => {
     let result = {};
@@ -24,34 +32,37 @@ const createApi = (config, serviceName) => {
         let supportCancel = false
         let cancelSources
 
-        let fn =  function (params, ...urlParams) {
+        let fn = function (params, ...urlParams) {
             if (userUrlParam) {
-              if ((urlParams.length + 1) !== urls.length) {
-                throw new Error(`url: ${url} 需要 ${urls.length - 1} 个参数，实际有${urlParams.length}个`)
-              }
+                if ((urlParams.length + 1) !== urls.length) {
+                    throw new Error(`url: ${url} 需要 ${urls.length - 1} 个参数，实际有${urlParams.length}个`)
+                }
             }
 
             let source
             if (supportCancel) {
-              source = CancelToken.source()
-              config.cancelToken = source.token
+                source = CancelToken.source()
+                config.cancelToken = source.token
 
-              cancelSources.push(source)
+                cancelSources.push(source)
             }
 
             let serviceUrl = ''
 
             if (!useMock) {
-              serviceUrl = baseURL[serviceName]
-
-              if (!serviceUrl) {
-                throw new Error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
-              }
+                if(baseURL[serviceName]){
+                    serviceUrl = baseURL[serviceName]
+                }else{
+                    serviceUrl = window.BASE_URL + toLine(serviceName)
+                }
+                if (!serviceUrl) {
+                    throw new Error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
+                }
             } else {
-              // 不使用mock的时候也检查下地址，提前校验
-              if (!baseURL[serviceName]) {
-                console.error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
-              }
+                // 不使用mock的时候也检查下地址，提前校验
+                if (!baseURL[serviceName]) {
+                    console.error(`serviceUrl ${serviceName} 不存在, 请在ipConfig中添加该项配置。`)
+                }
             }
 
 
@@ -60,23 +71,23 @@ const createApi = (config, serviceName) => {
             }, null) : url), params, config)
 
             if (supportCancel) {
-              callAPI.finally(() => {
-                cancelSources.splice(cancelSources.indexOf(source), 1)
-              })
+                callAPI.finally(() => {
+                    cancelSources.splice(cancelSources.indexOf(source), 1)
+                })
             }
 
             return callAPI
         }
 
-        fn.cancel = function() {
-          cancelSources = []
-          supportCancel = true
+        fn.cancel = function () {
+            cancelSources = []
+            supportCancel = true
 
-          fn.cancel = function() {
-            cancelSources.forEach(source => {
-              source.cancel()
-            })
-          }
+            fn.cancel = function () {
+                cancelSources.forEach(source => {
+                    source.cancel()
+                })
+            }
         }
 
         return fn
@@ -94,6 +105,7 @@ const createApi = (config, serviceName) => {
 
         if (process.env.NODE_ENV === 'development') {
             useMock =  mockAddress && option.mock
+            useMock = mockAddress && option.mock
             useMock && (url = mockAddress + url)
         }
 
