@@ -45,7 +45,7 @@
     <div>
         <!-- 表格数据 -->
         <el-table
-        row-key="id"
+        :row-key="rowKey"
         :class="dragClass"
         :height="tableHeight"
         :row-class-name="rowClassName"
@@ -115,6 +115,10 @@ export default {
     // 自动调用接口请求
     autoInit:{
       default:true,
+    },
+    rowKey: {
+      type: String,
+      default: 'id'
     }
   },
   data() {
