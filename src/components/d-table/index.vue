@@ -61,6 +61,8 @@
         @current-change="currentChange"
         @row-click = "rowClick"
         style="width: 100%;"
+        :summary-method = "summaryMethod"
+        :show-summary = "showSummary"
         ref="elTable">
             <slot></slot>
         </el-table>
@@ -93,17 +95,21 @@ export default {
     },
     // 尺寸
     size: {
+      type:String,
       default: 'small'
     },
-    // 尺寸
+    // border
     border: {
+      type:Boolean,
       default: true
     },
     // 分页
     paging: {
+      type:Boolean,
       default: true
     },
     dragClass:{
+      type:String,
       default: 'elTableDragDefault'
     },
     // 自定义行class
@@ -112,6 +118,16 @@ export default {
         return this.dragClass
       }
     },
+    // 是否显示合计
+    showSummary: {
+      type:Boolean,
+      default: false
+    },
+    // 合计方法
+    summaryMethod: {
+      type:Function
+    },
+    
     // 自动调用接口请求
     autoInit:{
       default:true,
