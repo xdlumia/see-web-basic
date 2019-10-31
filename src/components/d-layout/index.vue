@@ -252,7 +252,7 @@
                 };
             },
             refreshUserToken(){
-                if(this.lastRefreshTime<(+new Date-((parseFloat(lockOutTime))*60*1000))){
+                if(this.lastRefreshTime<(+new Date-((parseFloat(this.lockOutTime))*60*1000))){
                     // 十分钟后刷新用户token
                     if(localStorage.token&&localStorage.finger&&!this.isLockScreen){
                         this.lastRefreshTime = +new Date;
