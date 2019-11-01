@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-10-31 20:01:21
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-11-01 10:38:20
+ * @LastEditTime: 2019-11-01 11:04:15
  * @Description: file content
 */
 
@@ -207,6 +207,7 @@ export default {
         .then(res => {
           this.response = res || {}
           this.tableData = res.data || [];
+          this.$emit('response', res || {})
           // 如果有分页
           if (this.paging) {
             this.tableCount = res.count || 0;
