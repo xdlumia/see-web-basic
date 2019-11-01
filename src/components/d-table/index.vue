@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-10-31 20:01:21
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-11-01 10:19:48
+ * @LastEditTime: 2019-11-01 10:38:20
  * @Description: file content
 */
 
@@ -182,6 +182,14 @@ export default {
     },
     tableHeight: function () {
       return this.paging ? 'calc(100% - 32px)' : '100%'
+    }
+  },
+  watch: {
+    // 监控是否手动请求
+    autoInit(val) {
+      if (val) {
+        this.init(this.params);
+      }
     }
   },
   methods: {
