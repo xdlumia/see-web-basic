@@ -38,6 +38,16 @@ const thousandBitSeparator = (num) => {
 }
 
 /**
+ * @desc 千位分隔符转换并保留两位小数  100,000.00
+ * @date 2019年11月10日  后期项目使用的时候使用这个
+ * @示例 {{ number | milliFormat(2))}}
+ * @示例 {{ number | milliFormat)}} 如果fixed不传 默认=2
+ **/
+var milliFormat = function (num, fixed = 2) {
+  return num && num.toFixed(fixed).replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&,');
+};
+
+/**
  * @desc 过滤字符串html标签
  * @date 2018年7月10日
  * @示例 {{ htmlstr | filterHtml)}}
@@ -66,13 +76,13 @@ const userName = (() => {
       let success = false
 
       // TODO 1.system-service 独立 2. system-service,bizSystemService属于basic还是system？然后相应有涉及这些接口的文件也应当换位置
-      axios.get(baseURL.login + '/rmUser/userInfo', {params: {id}})
+      axios.get(baseURL.login + '/rmUser/userInfo', { params: { id } })
         .then(res => {
           success = true
           userCache[id] = res.data.name
         }).finally(() => {
-        !success && (delete userCache[id])
-      })
+          !success && (delete userCache[id])
+        })
     }
 
     return userCache[id]
@@ -83,6 +93,7 @@ const userName = (() => {
 export default {
   timeToStr,
   thousandBitSeparator,
+  milliFormat,
   filterHtml,
   userName,
   pennyToYuan

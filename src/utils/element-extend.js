@@ -1,19 +1,20 @@
-/**
- * @desc elementUI扩展入口
- * @author 闫超
- * @date 2018年9月17日
- **/
+/*
+ * @Author: web.闫超
+ * @Date: 2018-09-14 18:34:55
+ * @LastEditors: web.王晓冬
+ * @LastEditTime: 2019-11-05 16:27:54
+ * @Description: elementUI扩展入口
+ */
 import ElementUI from 'element-ui'
 
-
 /**
- * 默认设置 el-input的最大长度是300
+ * 默认设置 el-input textarea 类型下的最大长度是300 text类型最大长度是32
  * maxlength是通过attrs传递给实际的Input,暂时找不到任何合适的地方去修改attrs，因此只能覆盖下render方法，在render之前修改下
  */
 ElementUI.Input.render = (function (old, defaultMaxLength) {
   return function () {
     if (this.$attrs.maxlength === undefined) {
-      this.$attrs.maxlength = defaultMaxLength
+      this.$attrs.maxlength = this.type == 'text' ? 32 : defaultMaxLength;
     }
 
     return old.apply(this, arguments)
