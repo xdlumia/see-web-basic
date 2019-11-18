@@ -1,8 +1,8 @@
 /*
  * @Author: web.王晓冬
  * @Date: 2019-06-14 18:34:55
- * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 18:20:30
+ * @LastEditors: 赵伦
+ * @LastEditTime: 2019-11-18 10:09:18
  * @Description: 提供一个获取服务器时间的方法  let nowDate = Date.serversDate()
  */
 
@@ -10,7 +10,11 @@ import axios from 'axios';
 
 
 let baseURL = window.g && window.g.ApiUrl?window.g.ApiUrl : {}
-
+let fetchRemote = true;
+// 关闭抓取远程服务时间判断
+if(window.g&&typeof window.g.serverDate=="boolean"){
+  fetchRemote = window.g.serverDate
+}
 if(!baseURL.bizSystemService){
     try{
         baseURL.bizSystemService = apisUrl + 'biz-system-service'
@@ -34,7 +38,7 @@ function getServersDate() {
 Date.serversDate = function () {
   return new Date(t)
 };
-// if(baseURL.bizSystemService){
+if(fetchRemote){
   // 获取服务器时间
   getServersDate();
   // 给服务器时间每隔1秒递增1秒时间
@@ -45,4 +49,4 @@ Date.serversDate = function () {
   var serverTimer = setInterval(function () {
     getServersDate();
   }, 30000);
-// }
+}
