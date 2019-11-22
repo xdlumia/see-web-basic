@@ -44,6 +44,7 @@ const thousandBitSeparator = (num) => {
  * @示例 {{ number | milliFormat)}} 如果fixed不传 默认=2
  **/
 var milliFormat = function (num, fixed = 2) {
+  num = Number(num||0)
   return num && num.toFixed(fixed).replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&,');
 };
 
