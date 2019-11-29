@@ -2,14 +2,14 @@
  * @Author: web.王晓冬
  * @Date: 2019-08-01 11:54:35
  * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 18:21:33
+ * @LastEditTime: 2019-11-29 09:42:01
  * @Description: file content
  */
 import moment from 'moment' // 日期格式化
 import axios from 'axios'
 import Vue from 'vue'
 
-let baseURL = window.g && window.g.ApiUrl?window.g.ApiUrl : {}
+let baseURL = window.g && window.g.ApiUrl ? window.g.ApiUrl : {}
 
 /**
  * @desc 时间方法
@@ -44,7 +44,7 @@ const thousandBitSeparator = (num) => {
  * @示例 {{ number | milliFormat)}} 如果fixed不传 默认=2
  **/
 var milliFormat = function (num, fixed = 2) {
-  num = Number(num||0)
+  num = Number(num || 0)
   return num && num.toFixed(fixed).replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&,');
 };
 
@@ -77,7 +77,7 @@ const userName = (() => {
       let success = false
 
       // TODO 1.system-service 独立 2. system-service,bizSystemService属于basic还是system？然后相应有涉及这些接口的文件也应当换位置
-      axios.get(baseURL.login + '/rmUser/userInfo', { params: { id } })
+      axios.get(baseURL.systemService + '/rmUser/userInfo', { params: { id } })
         .then(res => {
           success = true
           userCache[id] = res.data.name
