@@ -1,8 +1,8 @@
 /*
  * @Author: web.王晓冬
  * @Date: 2019-08-01 11:54:35
- * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-12-04 10:03:56
+ * @LastEditors: 赵伦
+ * @LastEditTime: 2019-12-09 09:14:41
  * @Description: file content
  */
 import moment from 'moment' // 日期格式化
@@ -90,6 +90,33 @@ const userName = (() => {
   }
 })()
 
+/**
+ * @desc 人员头像显示
+ * @date 2018年7月10日
+ * @示例 {{ userId | userAvatar)}}
+ **/
+const userInfo = (() => {
+  let userCache = {}
+
+  return (id,prop='userName') => {
+    if (!userCache.hasOwnProperty(id)) {
+      if (!id) return
+      Vue.util.defineReactive(userCache, id, {})
+      let success = false
+
+      // TODO 1.system-service 独立 2. system-service,bizSystemService属于basic还是system？然后相应有涉及这些接口的文件也应当换位置
+      document.getElementById('app').__vue__.$api.bizSystemService.rmemployeeInfo(id)
+        .then(res => {
+          success = true
+          userCache[id] = res.data
+        }).finally(() => {
+          !success && (delete userCache[id])
+        })
+    }
+    return userCache[id][prop]
+  }
+})()
+
 
 export default {
   timeToStr,
@@ -97,5 +124,6 @@ export default {
   milliFormat,
   filterHtml,
   userName,
+  userInfo,
   pennyToYuan
 }
