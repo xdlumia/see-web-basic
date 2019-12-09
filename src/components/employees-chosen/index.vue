@@ -14,18 +14,10 @@
 -->
 
 <template>
-  <el-popover
-    @show="initData"
-    placement="bottom"
-    trigger="click"
-    v-model="visible"
-  >
+  <el-popover @show="initData" placement="bottom" trigger="click" v-model="visible">
     <div class="label-filter p5 pt0">
       <el-container class="employees-chosen">
-        <el-header
-          class="selected-employees d-auto-y"
-          v-if="multiple"
-        >
+        <el-header class="selected-employees d-auto-y" v-if="multiple">
           选中的人员:
           <el-tag
             :closable="isEdit || !storeSelectedEmployees.includes(tag) "
@@ -54,22 +46,10 @@
             </el-aside>
             <el-main class="employee-main">
               <div class="w200">
-                <el-input
-                  @input="doFilter"
-                  placeholder="请输入姓名"
-                  prefix-icon="el-icon-search"
-                  size="mini"
-                  v-model="employeeFilter"
-                ></el-input>
-                <div
-                  class="label-select employee-container"
-                  v-loading="loadingEmployees"
-                >
-                  <div
-                    class="ac p10"
-                    v-if="!employeeList.length"
-                  >暂无数据！</div>
-                  <div
+                <el-input @input="doFilter" placeholder="请输入姓名" prefix-icon="el-icon-search" size="mini" v-model="employeeFilter"></el-input>
+                <div class="label-select employee-container" v-loading="loadingEmployees">
+                  <div class="ac p10" v-if="!employeeList.length">暂无数据！</div>
+                  <component
                     :is="multiple ? 'el-checkbox-group' : 'el-radio-group'"
                     @change="onSelectChange"
                     class="wfull"
@@ -77,12 +57,12 @@
                     v-else
                     v-model="partSelectedEmployees"
                   >
-                    <div
+                    <component
                       :disabled="!(isEdit || !storeSelectedEmployees.includes(employee))"
                       :is="multiple ? 'el-checkbox-button' : 'el-radio-button'"
                       :key="employee.userId"
-                      :label="[ 
-                        employee.employeeName, 
+                      :label="[
+                        employee.employeeName,
                         employee.id,
                         employee.userId,
                         employee.deptName,
@@ -90,8 +70,8 @@
                       ].join(separator)"
                       size="mini"
                       v-for="employee in employeeList"
-                    >{{employee.employeeName}}</div>
-                  </div>
+                    >{{employee.employeeName}}</component>
+                  </component>
                 </div>
               </div>
             </el-main>
@@ -99,15 +79,8 @@
         </el-main>
         <el-footer v-if="multiple || !closeOnSelect">
           <div style="text-align: center; margin: 0">
-            <el-button
-              @click="visible = false"
-              size="mini"
-            >取消</el-button>
-            <el-button
-              @click="saveAndClose"
-              size="mini"
-              type="primary"
-            >确定</el-button>
+            <el-button @click="visible = false" size="mini">取消</el-button>
+            <el-button @click="saveAndClose" size="mini" type="primary">确定</el-button>
           </div>
         </el-footer>
       </el-container>
@@ -127,6 +100,7 @@ export default {
       type: Boolean,
       default: true
     },
+    excludeList:[],
     isEdit: {
       type: Boolean,
       default: true
@@ -148,7 +122,7 @@ export default {
     };
   },
   computed: {},
-  created() { },
+  created() {},
   methods: {
     getDeptList() {
       if (this.deptLoaded || this.loadingDept) {
@@ -175,7 +149,7 @@ export default {
           this.loadingDept = false;
         });
     },
-    initData: function () {
+    initData: function() {
       this.getDeptList();
 
       if (this.multiple) {
@@ -200,30 +174,30 @@ export default {
         this.partSelectedEmployees = !this.value
           ? ''
           : [
-            this.value.employeeName,
-            this.value.id,
-            this.value.userId,
-            this.value.deptName,
-            this.value.positionName
-          ]
-            .map(a => a || '')
-            .join(this.separator);
+              this.value.employeeName,
+              this.value.id,
+              this.value.userId,
+              this.value.deptName,
+              this.value.positionName
+            ]
+              .map(a => a || '')
+              .join(this.separator);
       }
     },
-    deptChanged: function (dept) {
+    deptChanged: function(dept) {
       this.employeeFilter = '';
       this.loadingEmployees = true;
 
       this.$api.bizSystemService
         .getEmployeesUserByDeptId({ deptId: dept.id })
         .then(res => {
-          this.employeeList = this.storedEmployeeList = res.data;
+          this.employeeList = this.storedEmployeeList = res.data.filter(item => !this.excludeList.includes(item.userId));
         })
         .finally(() => {
           this.loadingEmployees = false;
         });
     },
-    doFilter: function () {
+    doFilter: function() {
       let employeeFilter = this.employeeFilter;
 
       this.employeeList = this.storedEmployeeList.filter(employee => {
@@ -234,18 +208,18 @@ export default {
         );
       });
     },
-    handleCloseTag: function (tag) {
+    handleCloseTag: function(tag) {
       this.partSelectedEmployees.splice(
         this.partSelectedEmployees.indexOf(tag),
         1
       );
     },
-    onSelectChange: function () {
+    onSelectChange: function() {
       if (!this.multiple && this.closeOnSelect) {
         this.saveAndClose();
       }
     },
-    saveAndClose: function () {
+    saveAndClose: function() {
       this.visible = false;
 
       let toObj = e => {
@@ -292,6 +266,7 @@ export default {
       min-height: 200px;
     }
   }
+
   /deep/ .label-select {
     .el-radio-button,
     .el-checkbox-button {
@@ -328,12 +303,12 @@ export default {
 
     .el-checkbox-button.is-checked .el-checkbox-button__inner:before,
     .el-radio-button.is-active .el-radio-button__inner:before {
-      content: "\e6da";
+      content: '\E611';
       position: absolute;
       right: 20px;
       display: inline-block;
       vertical-align: middle;
-      font-family:element-icons!important;
+      font-family: element-icons !important;
     }
   }
 }
