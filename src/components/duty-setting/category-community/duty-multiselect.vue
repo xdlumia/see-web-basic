@@ -112,7 +112,7 @@ export default {
             }
             // 选中的ids
             let ids = list.map(item => item[this.identity]);
-            this.$emit('change', ids, this.preSelected || [], list);
+            this.$emit('change', ids, this.preSelected || [], list, item);
             this.preSelected = ids;
         }
     }

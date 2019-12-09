@@ -1,4 +1,4 @@
-<!-- 
+<!--
 /**
  * @author 赵伦
  * 楼盘卡片布局
@@ -80,7 +80,7 @@ export default {
         background-repeat: no-repeat;
         width: 30px;
         height: 30px;
-        background-image: url('../../assets/img/defaultimg.png');
+        background-image: url('../../../assets/img/defaultimg.png');
     }
     .title {
         display: inline-block;

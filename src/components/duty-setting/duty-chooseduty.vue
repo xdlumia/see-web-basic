@@ -1,4 +1,4 @@
-<!-- 
+<!--
   /**
  * 责任人选择弹框
  * @author 赵伦
@@ -56,21 +56,20 @@
                     </el-col>
                     <el-col :span="16">
                         <div class="h500 wfull pl10 d-auto-y" ref="scrollContainer">
-                            <div class="pre-choose-list" v-if="preChooseList.length">
-                                <div class="pl10">已选择</div>
-                                <span
-                                    class="pre-choose-people"
-                                    :key="item.userId"
-                                    v-for="item of preChooseList"
-                                    @click="delPreChoose(item)"
-                                >
-                                    <span class="close" :class="{selected:item.$$selected}" @click="removePreChoose(item)" title="移除">×</span>
-                                    <peopleCard :user="item" :selected="item.$$selected"></peopleCard>
+                            <div class="pre-choose-list">
+                              <div class="pl10">当前选择:</div>
+                              <div v-if="!selectedIds.length" class="ac d-text-gray" style="height: 97px;line-height: 97px"> 暂无 </div>
+                              <span
+                                class="pre-choose-people"
+                                :key="userId + 'current_select'"
+                                v-for="(userId,index) of  selectedIds"
+                              >
+                                    <span class="close" :class="{selected:true}" @click="selectedIds.splice(index, 1)" title="移除">×</span>
+                                    <peopleCard :user="userList.find(emp=> emp.userId === userId)" :selected="true"></peopleCard>
                                 </span>
                             </div>
                             <div class="pl10" v-if="deptName">{{deptName}}部门成员</div>
                             <multiSelect
-                                v-model="selectedIds"
                                 :multi="dialogMeta.isMulti"
                                 :value="selectedIds"
                                 :list="employList"
@@ -90,7 +89,7 @@
     </div>
 </template>
 <script>
-import multiSelect from './duty-multiselect'; // 排列卡片多选
+import multiSelect from './category-community/duty-multiselect'; // 排列卡片多选
 import peopleCard from './duty-peoplecard'; // 责任人卡片
 /**
  * 责任人选择弹框
@@ -112,7 +111,6 @@ export default {
                 children: 'children', // 树形子数据字段
                 label: 'deptName' // 树形显示字段
             },
-            employList: [], // 人员显示列表
             selectedIds: [], // 选中的人员ids
             userList: [], // 所有的用户列表
             tree: [], // 初始树列表
@@ -131,6 +129,15 @@ export default {
                 return true;
             }
             return this.preChooseList.some(item=>item.$$selected);
+        },
+        // 当前部门人员
+        employList() {
+          return this.userList.filter(
+            item => item.deptId == this.deptId
+          );
+        },
+        currentDeptSelect() {
+
         }
     },
     created() {
@@ -160,14 +167,14 @@ export default {
             this.handleNodeClick(this.deptTree[0]);
             if (this.dialogMeta.userIds) {
                 this.selectedIds = this.dialogMeta.userIds;
-                this.savePreSelectPeople();
+               // this.savePreSelectPeople();
                 this.userList.some(item => {
                     if (this.dialogMeta.userIds.includes(item.userId)) {
                         this.expandedIds = [item.deptId];
                         this.flatList.some(dept => {
                             if (dept.id == item.deptId) {
                                 this.handleNodeClick(dept);
-                                this.savePreSelectPeople();
+                                //this.savePreSelectPeople();
                                 return true;
                             }
                         });
@@ -212,10 +219,8 @@ export default {
                 this.deptId = data.id;
                 this.deptName = data.deptName;
                 this.totalCode = data.totalCode;
-                this.employList = this.userList.filter(
-                    item => item.deptId == this.deptId
-                );
-                this.savePreSelectPeople();
+
+               // this.savePreSelectPeople();
             }
         },
         removePreChoose(item){
@@ -227,35 +232,35 @@ export default {
                 }
             })
         },
-        /**保存其他部门已经选择的人 */
-        savePreSelectPeople() {
-            if (this.allowDiffDept) {
-                let preList = this.preChooseList.filter(
-                    item => item.$$selected
-                );
-                let preUserIds = preList.map(item => item.userId);
-                let notIncludes = this.selectedIds.filter(
-                    id => !preUserIds.includes(id)
-                );
-                let users = this.userList.filter(item =>
-                    notIncludes.includes(item.userId)
-                );
-                let nowSelected = [];
-                this.employList.map(item => {
-                    if (preUserIds.includes(item.userId)) {
-                        nowSelected.push(item.userId);
-                    }
-                });
-                this.selectedIds = nowSelected;
-                this.preChooseList = preList
-                    .concat(users)
-                    .sort((a, b) => (a.deptId < b.deptId ? -1 : 1))
-                    .map(item => {
-                        this.$set(item, '$$selected', true);
-                        return item;
-                    });
-            }
-        },
+        // /**保存其他部门已经选择的人 */
+        // savePreSelectPeople() {
+        //     if (this.allowDiffDept) {
+        //         let preList = this.preChooseList.filter(
+        //             item => item.$$selected
+        //         );
+        //         let preUserIds = preList.map(item => item.userId);
+        //         let notIncludes = this.selectedIds.filter(
+        //             id => !preUserIds.includes(id)
+        //         );
+        //         let users = this.userList.filter(item =>
+        //             notIncludes.includes(item.userId)
+        //         );
+        //         let nowSelected = [];
+        //         this.employList.map(item => {
+        //             if (preUserIds.includes(item.userId)) {
+        //                 nowSelected.push(item.userId);
+        //             }
+        //         });
+        //         this.selectedIds = nowSelected;
+        //         this.preChooseList = preList
+        //             .concat(users)
+        //             .sort((a, b) => (a.deptId < b.deptId ? -1 : 1))
+        //             .map(item => {
+        //                 this.$set(item, '$$selected', true);
+        //                 return item;
+        //             });
+        //     }
+        // },
         /**删除其他部门已经选择的人 */
         delPreChoose(user) {
             user.$$selected = !user.$$selected;
@@ -318,16 +323,13 @@ export default {
                 peopleDom.classList.add('checked');
             }
         },
-        peopleChanged(newV, oldV, list) {
+        peopleChanged(newV, oldV, list, item) {
             if (this.allowDiffDept) {
-                let delV = oldV.filter(item => !newV.includes(item));
-                this.preChooseList.map(item => {
-                    if (delV.includes(item.userId)) {
-                        item.$$selected = false;
-                    } else if (newV.includes(item.userId)) {
-                        item.$$selected = true;
-                    }
-                });
+              if (item.$$checked) {
+                this.selectedIds.push(item.userId)
+              } else {
+                this.selectedIds.splice( this.selectedIds.indexOf(item.userId), 1)
+              }
             }
         },
         // 关闭当前弹框
@@ -338,15 +340,15 @@ export default {
         async save() {
             let selectedIds = this.selectedIds;
             if (this.allowDiffDept) {
-                selectedIds = [].concat(
-                    this.selectedIds,
-                    this.preChooseList
-                        .filter(item => item.$$selected)
-                        .map(item => item.userId)
-                );
-                selectedIds = selectedIds.filter(
-                    (item, index) => selectedIds.indexOf(item) == index
-                );
+                // selectedIds = [].concat(
+                //     this.selectedIds,
+                //     this.preChooseList
+                //         .filter(item => item.$$selected)
+                //         .map(item => item.userId)
+                // );
+                // selectedIds = selectedIds.filter(
+                //     (item, index) => selectedIds.indexOf(item) == index
+                // );
             }
             // if (selectedIds.length) {
                 let {
@@ -354,12 +356,11 @@ export default {
                     funcDesc,
                     syscode,
                     objectIds,
+                    objectType,
                     objectNames
                 } = this.dialogMeta;
                 await this.$confirm(
-                    `即将修改【${objectNames.join(
-                        ','
-                    )}】等楼盘的${funcDesc},是否确认修改？`,
+                    `即将修改${objectNames}的${funcDesc},是否确认修改？`,
                     '确认信息',
                     {
                         distinguishCancelAndClose: true,
@@ -373,7 +374,7 @@ export default {
                     await this.$api.seeContractDutyService.getCfgObjectDataAuthSave(
                         Object.assign(
                             {
-                                objectType: 'lp',
+                                objectType: objectType,
                                 targetUserIds: selectedIds
                             },
                             { funcCode, funcDesc, syscode, objectIds }

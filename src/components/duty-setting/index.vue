@@ -1,4 +1,4 @@
-<!-- 
+<!--
 /**
  * 责任人设置弹框小按钮
  * @author 赵伦
@@ -40,7 +40,7 @@
             :title="dialogMeta.title"
             :append-to-body="true"
             :close-on-click-modal="false"
-            top="20px"
+            top="22px"
             width="1000px"
             v-dialogDrag
         >
@@ -49,6 +49,7 @@
                 :is="dialogMeta.component"
                 :dialogMeta="dialogMeta"
                 v-if="dialogMeta.visible"
+                :supportCategory = "categories"
             ></components>
         </el-dialog>
     </span>
@@ -68,6 +69,9 @@ import contractDuty from './duty-dialog';
  * @property {number} buildingMaxSelectNum 选择楼盘最多选择多少个，默认5个
  * @property {Enum} module 所属模块 可取值为 houseCondition 房态模块 contract 合同模块 finance 财务模块 property 物业模块
  */
+  // 系统默认支持责任人类别：按楼盘进行责任人划分
+let defaultCategory = ['community', 'projectCommunity']
+
 export default {
     components: {
         contractDuty
@@ -80,7 +84,8 @@ export default {
         'pageCode', // 页面编码
         'color', // 图标颜色
         'module', // 所属模块 可取值为 houseCondition 房态模块 contract 合同模块 finance 财务模块 property 物业模块
-        'buildingMaxSelectNum' // 选择楼盘最多选择多少个
+        'buildingMaxSelectNum', // 选择楼盘最多选择多少个
+        'supportCategory' // 支持的设置分类列表
     ],
     data() {
         return {
@@ -93,7 +98,8 @@ export default {
                 module: '', // 所属模块
                 parent: '', // 父级标题
                 buildingMaxSelectNum: '' // 选择楼盘最多选择多少个
-            }
+            },
+            categories: this.supportCategory && this.supportCategory.length ? this.supportCategory : defaultCategory
         };
     },
     computed: {
@@ -111,7 +117,14 @@ export default {
         this.dialogMeta.module = this.module;
         this.dialogMeta.buildingMaxSelectNum = this.buildingMaxSelectNum;
     },
-    methods: {}
+    methods: {},
+
+    registerDutyCategory(config) {
+      contractDuty.registerDutyCategory(config)
+    },
+    setDefaultCategory(l) {
+      defaultCategory = l
+    },
 };
 </script>
 <style lang="scss" scoped>
