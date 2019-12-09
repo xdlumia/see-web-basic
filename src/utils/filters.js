@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-08-01 11:54:35
  * @LastEditors: 赵伦
- * @LastEditTime: 2019-12-09 09:14:41
+ * @LastEditTime: 2019-12-09 14:19:21
  * @Description: file content
  */
 import moment from 'moment' // 日期格式化
@@ -98,7 +98,7 @@ const userName = (() => {
 const userInfo = (() => {
   let userCache = {}
 
-  return (id,prop='userName') => {
+  return (id,prop='employeeName') => {
     if (!userCache.hasOwnProperty(id)) {
       if (!id) return
       Vue.util.defineReactive(userCache, id, {})
