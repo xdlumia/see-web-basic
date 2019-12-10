@@ -38,6 +38,7 @@
                             :is="item.componentName"
                             :value.sync="item.value"
                             :authStatKey="authStatKey"
+                            :authStat="innerDataGetter(statCache,selectedAuthTabData.objauthCode, {})[currentCategory.objectType] || {}"
                             :ref="'category' + item.type"
                             style="height: 625px"
                         ></components>
@@ -47,6 +48,7 @@
                     <components
                         :is="categories[0].componentName"
                         :value.sync="categories[0].value"
+                        :authStat="innerDataGetter(statCache, selectedAuthTabData.objauthCode, {})[currentCategory.objectType] || {}"
                         :authStatKey="authStatKey"
                         ref="categoryRef"
                         style="height: 680px"
@@ -240,10 +242,10 @@
                 }
             },
             authStatKey(value) {
-                value.ready && this.queryAllAuthStat()
             },
 
             authStatCategoryUserKey() {
+                this.queryAllAuthStat()
                 this.getAllAuthDutyUserList()
             }
         },
@@ -408,7 +410,7 @@
             // 查询每个分类下的已配置数量
             queryAllAuthStat() {
                 let objectType = this.currentCategory.objectType
-                let currentStatCache = this.innerDataGetter(this.innerDataGetter(this.statCache, this.selectedAuthTabData.objauthCode, {}), objectType, {})
+                let currentStatCache = this.innerDataGetter(this.statCache, this.selectedAuthTabData.objauthCode, {})
 
                 if (!currentStatCache[objectType]) {
                     this.$set(currentStatCache, objectType, {})
@@ -417,8 +419,12 @@
                         syscode: this.syscode,
                         funcCode: this.selectedAuthTabData.objauthCode,
                         objectType: objectType
-                    }).then((res) => {
-
+                    }).then(({data}) => {
+                      let obj = {};
+                      data.forEach(item => {
+                        obj[item.objectId] = item.targetUserCount
+                      })
+                      this.$set(currentStatCache, objectType, obj)
                     }).catch(() => {
                         delete currentStatCache[objectType]
                     })
@@ -499,7 +505,19 @@
                     let currentValue = this.currentCategory.value
                     let typeCache = this.currentCategoryCache
 
+                    let currentStatCache = this.innerDataGetter(this.statCache, this.selectedAuthTabData.objauthCode, {})[this.currentCategory.objectType]
+
                     currentValue.forEach(val => {
+                       // 责任人设置变化后，缓存统计数量重新计算
+                        let lastCount = currentStatCache[val] || 0
+
+                        if(typeCache[val][this.subDialogMeta.funcCode]) {
+                          lastCount -= typeCache[val][this.subDialogMeta.funcCode].length
+                        }
+
+                        lastCount += users.length;
+                        currentStatCache[val] = lastCount
+
                         this.$set(typeCache[val],this.subDialogMeta.funcCode, users)
                     })
                 }

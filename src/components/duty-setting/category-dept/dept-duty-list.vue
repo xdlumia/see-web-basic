@@ -18,9 +18,9 @@
             :props="treeProps"
             @current-change="deptChanged"
         >
-             <span class="custom-tree-node" slot-scope="{ node}">
+             <span class="custom-tree-node" slot-scope="{ node, data}">
                   <span>{{ node.label }}</span>
-                  <span>({{ node.label }})</span>
+                  <span>（{{authStat[data.id] || 0}}）</span>
              </span>
         </el-tree>
     </div>
@@ -28,7 +28,7 @@
 <script>
 
     export default {
-        props: ['sysCode', 'funcCode'],
+        props: ['sysCode', 'funcCode', 'authStat'],
         data() {
             return {
                 loadingDept: false, //部门加载标识
