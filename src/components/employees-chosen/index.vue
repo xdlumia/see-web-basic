@@ -81,6 +81,7 @@
                       :disabled="!(isEdit || !storeSelectedEmployees.includes(employee))"
                       :is="multiple ? 'el-checkbox-button' : 'el-radio-button'"
                       :key="employee.userId"
+                      class="el-icon-check"
                       :label="[
                         employee.employeeName,
                         employee.id,
@@ -331,14 +332,13 @@ export default {
       width: 100%;
     }
 
-    .el-checkbox-button.is-checked .el-checkbox-button__inner:before,
-    .el-radio-button.is-active .el-radio-button__inner:before {
-      content: "\E611";
-      position: absolute;
-      right: 20px;
-      display: inline-block;
-      vertical-align: middle;
-      font-family: element-icons !important;
+    .el-checkbox-button .el-checkbox-button__inner,
+    .el-radio-button .el-radio-button__inner {
+      text-align: left;
+      background-color: transparent;
+      color: #409eff;
+      box-shadow: none;
+      border: 0;
     }
   }
 }
