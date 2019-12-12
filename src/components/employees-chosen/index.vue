@@ -69,7 +69,7 @@
                     class="ac p10"
                     v-if="!employeeList.length"
                   >暂无数据！</div>
-                  <component
+                  <div
                     :is="multiple ? 'el-checkbox-group' : 'el-radio-group'"
                     @change="onSelectChange"
                     class="wfull"
@@ -77,12 +77,13 @@
                     v-else
                     v-model="partSelectedEmployees"
                   >
-                    <component
+                    <div
                       :disabled="!(isEdit || !storeSelectedEmployees.includes(employee))"
                       :is="multiple ? 'el-checkbox-button' : 'el-radio-button'"
+                      class="el-icon-check"
                       :key="employee.userId"
-                      :label="[
-                        employee.employeeName,
+                      :label="[ 
+                        employee.employeeName, 
                         employee.id,
                         employee.userId,
                         employee.deptName,
@@ -90,8 +91,8 @@
                       ].join(separator)"
                       size="mini"
                       v-for="employee in employeeList"
-                    >{{employee.employeeName}}</component>
-                  </component>
+                    >{{employee.employeeName}}</div>
+                  </div>
                 </div>
               </div>
             </el-main>
@@ -126,10 +127,6 @@ export default {
     closeOnSelect: {
       type: Boolean,
       default: true
-    },
-    excludeList: {
-      type: Array,
-      default: () => []
     },
     isEdit: {
       type: Boolean,
@@ -221,7 +218,7 @@ export default {
       this.$api.bizSystemService
         .getEmployeesUserByDeptId({ deptId: dept.id })
         .then(res => {
-          this.employeeList = this.storedEmployeeList = res.data.filter(item => !this.excludeList.includes(item.userId));
+          this.employeeList = this.storedEmployeeList = res.data;
         })
         .finally(() => {
           this.loadingEmployees = false;
@@ -296,7 +293,6 @@ export default {
       min-height: 200px;
     }
   }
-
   /deep/ .label-select {
     .el-radio-button,
     .el-checkbox-button {
@@ -331,9 +327,10 @@ export default {
       width: 100%;
     }
 
-    .el-checkbox-button.is-checked .el-checkbox-button__inner:before,
-    .el-radio-button.is-active .el-radio-button__inner:before {
-      content: "\E611";
+    .el-checkbox-button.is-checked:before,
+    .el-radio-button.is-active:before {
+      font-size: 18px;
+      color: #409eff;
       position: absolute;
       right: 20px;
       display: inline-block;
