@@ -2,7 +2,7 @@
  * @Author: web.王晓冬
  * @Date: 2019-09-26 10:34:23
  * @LastEditors: 赵伦
- * @LastEditTime: 2019-12-12 10:57:52
+ * @LastEditTime: 2019-12-12 16:47:47
  * @Description: file content
  */
 <template>
@@ -287,18 +287,30 @@
                 if(this.loginForm.syscode=='asystem'&&this.isMarket){
                     this.loginForm.isMarket=true;
                 }
+                let loading
+                try {
+                    loading = this.$loading({target:this.$el.querySelector('.lock-screen-main')})
+                } catch (error) {
+                    console.log(error)
+                }
                 this.$api.systemService.login(this.loginForm)
                 .then(async res=>{
                     let token = res.data.token || ''
                     localStorage.token = token
                     localStorage.finger = this.loginForm.finger
                     // axios.defaults.headers.token = localStorage.token
-                    await this.$api.bizSystemService.getUserDetail()
+                    try {
+                        await this.$api.bizSystemService.getUserDetail({syscode:this.loginForm.syscode})
+                        await this.$api.bizSystemService.getUserAuth(this.loginForm.syscode)
+                    } catch (error) {}
                     this.isLogin = false
                     this.isLockScreen = false
                 })
                 .catch(error=>{
                    this.errotTips = error || ''
+                })
+                .finally(()=>{
+                    loading&&loading.close()
                 })
 
             },
