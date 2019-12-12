@@ -1,8 +1,8 @@
 /*
  * @Author: web.王晓冬
  * @Date: 2019-09-26 10:34:23
- * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 20:03:36
+ * @LastEditors: 赵伦
+ * @LastEditTime: 2019-12-12 10:57:52
  * @Description: file content
  */
 <template>
@@ -288,11 +288,12 @@
                     this.loginForm.isMarket=true;
                 }
                 this.$api.systemService.login(this.loginForm)
-                .then(res=>{
+                .then(async res=>{
                     let token = res.data.token || ''
                     localStorage.token = token
                     localStorage.finger = this.loginForm.finger
                     // axios.defaults.headers.token = localStorage.token
+                    await this.$api.bizSystemService.getUserDetail()
                     this.isLogin = false
                     this.isLockScreen = false
                 })
