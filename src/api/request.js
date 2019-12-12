@@ -1,8 +1,8 @@
 /*
  * @Author: web.王晓冬
  * @Date: 2019-10-24 16:45:27
- * @LastEditors: web.王晓冬
- * @LastEditTime: 2019-10-24 17:01:27
+ * @LastEditors: 赵伦
+ * @LastEditTime: 2019-12-12 16:54:44
  * @Description: request
  */
 import axios from 'axios'
@@ -58,12 +58,15 @@ axios.interceptors.response.use(response => {
   let showMsg = response.config.isShowMessage !== undefined ? response.config.isShowMessage :response.config.showMsg
 
   if (res.code == 200 && (showMsg !== undefined ? showMsg : response.config.method !== 'get')) {
-    Message.success({
-      message: response.config.msg || res.msg,
-      duration: 3000,
-      dangerouslyUseHTMLString: true,
-      showClose: true
-    });
+    let msg = response.config.msg || res.msg
+    if(msg){
+      Message.success({
+        message: msg,
+        duration: 3000,
+        dangerouslyUseHTMLString: true,
+        showClose: true
+      });
+    }
   }
 
   // 成功返回数据
