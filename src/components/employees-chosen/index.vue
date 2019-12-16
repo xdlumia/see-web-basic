@@ -128,6 +128,10 @@ export default {
       type: Boolean,
       default: true
     },
+    excludeList: {
+      type: Array,
+      default: () => []
+    },
     isEdit: {
       type: Boolean,
       default: true
@@ -218,7 +222,7 @@ export default {
       this.$api.bizSystemService
         .getEmployeesUserByDeptId({ deptId: dept.id })
         .then(res => {
-          this.employeeList = this.storedEmployeeList = res.data;
+          this.employeeList = this.storedEmployeeList = res.data.filter(item => !this.excludeList.includes(item.userId));
         })
         .finally(() => {
           this.loadingEmployees = false;
