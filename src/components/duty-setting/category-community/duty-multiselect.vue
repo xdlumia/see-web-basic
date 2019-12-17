@@ -101,18 +101,24 @@ export default {
                 this.selectList.map(item => (item.$$checked = false));
             }
             item.$$checked = !item.$$checked;
-            // 选中的列表
-            let list = this.selectList.filter(item => item.$$checked);
-            let max = parseInt(this.max) || 0;
-            if (max) {
-                if (list.length > max) {
-                    item.$$checked = false;
-                    return this.$emit('error', 'maxError');
-                }
+            // // 选中的列表
+            // let list = this.selectList.filter(item => item.$$checked);
+            // let max = parseInt(this.max) || 0;
+            // if (max) {
+            //     if (list.length > max) {
+            //         item.$$checked = false;
+            //         return this.$emit('error', 'maxError');
+            //     }
+            // }
+            let ids = [...this.preSelected]
+
+            if ( item.$$checked) {
+              ids.push( item[this.identity])
+            } else {
+              ids.splice(ids.indexOf(item[this.identity]), 1)
             }
-            // 选中的ids
-            let ids = list.map(item => item[this.identity]);
-            this.$emit('change', ids, this.preSelected || [], list, item);
+
+            this.$emit('change', ids, this.preSelected || [], ids, item);
             this.preSelected = ids;
         }
     }

@@ -10,10 +10,8 @@
         <div class="d-pointer task-person br d-inline d-text-gray mb10">
             <div class="task-head"></div>
             <div class="task-head-name ac d-bg-yellow">
-                <span
-                    v-if="!selected"
-                >{{item.employeeName ? item.employeeName.split('').pop() : '无'}}</span>
-                <span v-else>
+              <el-avatar v-if="!selected" :src="item.avatarUrl">{{item.employeeName ? item.employeeName.split('').pop() : '无'}}</el-avatar>
+              <span v-else>
                     <i class="el-icon-success f18"></i>
                 </span>
             </div>

@@ -380,16 +380,19 @@ export default {
                             { funcCode, funcDesc, syscode, objectIds }
                         )
                     );
+                  let employMap =  {}
+
+                    this.employList.forEach(item => {
+                      employMap[item.userId] = item
+                    })
                     // 向父级传递回显信息
-                    let users = this.userList
-                        .filter(item => selectedIds.includes(item.userId))
-                        .map(item => {
-                            return {
-                                funcCode,
-                                funcDesc,
-                                empobj: item
-                            };
-                        });
+                    let users = selectedIds.map((id) => {
+                      return {
+                        funcCode,
+                        funcDesc,
+                        empobj: employMap[id]
+                      };
+                    })
                     this.saving = false;
                     this.close(users);
                 } catch (e) {
