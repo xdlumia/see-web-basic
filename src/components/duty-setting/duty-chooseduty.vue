@@ -382,7 +382,7 @@ export default {
                     );
                   let employMap =  {}
 
-                    this.employList.forEach(item => {
+                    this.userList.forEach(item => {
                       employMap[item.userId] = item
                     })
                     // 向父级传递回显信息
