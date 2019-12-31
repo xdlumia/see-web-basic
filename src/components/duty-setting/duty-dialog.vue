@@ -415,19 +415,22 @@
                 if (!currentStatCache[objectType]) {
                     this.$set(currentStatCache, objectType, {})
 
-                    this.$api.seeContractDutyService.statObjDataauthList({
-                        syscode: this.syscode,
-                        funcCode: this.selectedAuthTabData.objauthCode,
-                        objectType: objectType
-                    }).then(({data}) => {
-                      let obj = {};
-                      data.forEach(item => {
-                        obj[item.objectId] = item.targetUserCount
-                      })
-                      this.$set(currentStatCache, objectType, obj)
-                    }).catch(() => {
-                        delete currentStatCache[objectType]
-                    })
+					if (this.$api.seeContractDutyService.statObjDataauthList) {
+						 this.$api.seeContractDutyService.statObjDataauthList({
+							syscode: this.syscode,
+							funcCode: this.selectedAuthTabData.objauthCode,
+							objectType: objectType
+						}).then(({data}) => {
+						  let obj = {};
+						  data.forEach(item => {
+							obj[item.objectId] = item.targetUserCount
+						  })
+						  this.$set(currentStatCache, objectType, obj)
+						}).catch(() => {
+							delete currentStatCache[objectType]
+						})
+					}
+                
                 }
             },
 
