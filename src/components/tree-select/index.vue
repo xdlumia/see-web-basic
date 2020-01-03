@@ -17,7 +17,13 @@
 **/
 -->
 <template>
-  <el-popover placement="bottom-start" width="200" trigger="click" v-model="isShowSelect">
+  <el-popover
+    placement="bottom-start"
+    width="200"
+    trigger="click"
+    v-model="isShowSelect"
+  >
+    <slot name="extend"></slot>
     <el-tree
       v-loading="loading"
       style="height:300px;overflow-y: scroll;"
@@ -35,28 +41,44 @@
       @check="getKeys"
       :props="props"
     ></el-tree>
-    <el-select slot="reference" class="tree-select-box" :collapse-tags="collapseTags" ref="select"  v-model="modelValue" :size="size" :value-key="nodeKey" :clearable="true" :multiple="multiple" :placeholder="placeholder">
-      <el-option v-for="(item,index) in options" :key="index" :label="item[props.label]" :value="item[nodeKey]"></el-option>
+    <el-select
+      slot="reference"
+      class="tree-select-box"
+      :collapse-tags="collapseTags"
+      ref="select"
+      v-model="modelValue"
+      :size="size"
+      :value-key="nodeKey"
+      :clearable="true"
+      :multiple="multiple"
+      :placeholder="placeholder"
+    >
+      <el-option
+        v-for="(item,index) in options"
+        :key="index"
+        :label="item[props.label]"
+        :value="item[nodeKey]"
+      ></el-option>
     </el-select>
   </el-popover>
 </template>
 <script>
 export default {
   props: {
-    value:{ required: true },
-    data: { type: Array,},
+    value: { required: true },
+    data: { type: Array, },
     //请求接口
     api: {
       required: false
     },
     params: {
-      type: [Object,String,Number],
+      type: [Object, String, Number],
     },
-    collapseTags:{
+    collapseTags: {
       type: Boolean,
       default: false
     },
-    props:{},
+    props: {},
     defaultExpandAll: {
       type: Boolean,
       default: false
@@ -65,14 +87,14 @@ export default {
       type: Boolean,
       default: false
     },
-    size:{type: String,default: 'small'},
+    size: { type: String, default: 'small' },
     nodeKey: { type: String, default: 'id' },
     placeholder: { type: String, default: '请选择' }
   },
-  data () {
+  data() {
     return {
-      loading:false,
-      treeData:[],
+      loading: false,
+      treeData: [],
       // 是否显示树状选择器
       isShowSelect: false,
       options: [],
@@ -81,51 +103,51 @@ export default {
     }
   },
   watch: {
-    isShowSelect (val) {
+    isShowSelect(val) {
       // 隐藏select自带的下拉框
       this.$refs.select.blur()
       if (val) {
-        this.defaultCheckedKeys = this.multiple?this.value:[this.value]
-        this.defaultExpandedKeys = this.multiple?this.value:[this.value]
+        this.defaultCheckedKeys = this.multiple ? this.value : [this.value]
+        this.defaultExpandedKeys = this.multiple ? this.value : [this.value]
       }
     },
-    value(val){
-      this.findTreeNode(this.treeDatas,val)
+    value(val) {
+      this.findTreeNode(this.treeDatas, val)
     },
-    data:{
-      handler:function(data){
-        this.findTreeNode(data,this.value)
+    data: {
+      handler: function (data) {
+        this.findTreeNode(data, this.value)
       },
-      deep:true
+      deep: true
     }
-    
+
   },
-  mounted () {
+  mounted() {
   },
   created() {
-    if(this.api){
+    if (this.api) {
       this.init(this.params);
     }
   },
-  computed:{
-    treeDatas(){
-      return this.api?this.treeData:this.data
+  computed: {
+    treeDatas() {
+      return this.api ? this.treeData : this.data
     },
     // 实时更新server
-    server(){
+    server() {
       return this.api.split('.')[0]
     },
     // 实时更新url
-    url(){
+    url() {
       return this.api.split('.')[1]
     },
-    modelValue:{
-      get(){
-        this.findTreeNode(this.treeDatas,this.value)
+    modelValue: {
+      get() {
+        this.findTreeNode(this.treeDatas, this.value)
         return this.value
       },
-      set(val){
-        this.$emit('input',val)
+      set(val) {
+        this.$emit('input', val)
       },
     }
   },
@@ -135,38 +157,40 @@ export default {
       this.$api[this.server][this.url](params)
         .then(res => {
           this.treeData = res.data || [];
-          this.findTreeNode(this.treeData,this.value)
+          this.findTreeNode(this.treeData, this.value)
         })
         .finally(() => {
           //关闭loading
-          this.loading = false; 
+          this.loading = false;
         });
     },
-    handleNodeClick (data) {
+    handleNodeClick(data) {
       if (!this.multiple) {
         this.options = [data]
-        this.$emit('input',data[this.nodeKey])
-        this.isShowSelect = !this.isShowSelect
+        if (data[this.nodeKey]) {
+          this.$emit('input', data[this.nodeKey])
+          this.isShowSelect = !this.isShowSelect
+        }
       }
     },
     // 点击多选框选中
-    getKeys (data, checked) {
+    getKeys(data, checked) {
       this.options = checked.checkedNodes
-      this.$emit('input',this.options.map(item=>item[this.nodeKey]))
+      this.$emit('input', this.options.map(item => item[this.nodeKey]))
     },
     // 递归查询树形节点
-    findTreeNode (tree, val) {
+    findTreeNode(tree, val) {
       if (this.value || (this.value || []).length) {
-        if(this.multiple){
-          tree.forEach(item=>{
-            if(val.includes(item[this.nodeKey])){
+        if (this.multiple) {
+          tree.forEach(item => {
+            if (val.includes(item[this.nodeKey])) {
               this.options.push(item)
             }
-            if((item[this.props.children || 'children'] || []).length){
+            if ((item[this.props.children || 'children'] || []).length) {
               this.findTreeNode(item[this.props.children || 'children'], val)
             }
           })
-        }else{
+        } else {
           for (var i = 0; i < tree.length; i++) {
             if (tree[i][this.nodeKey] == val) {
               this.options = [tree[i]]
@@ -182,7 +206,7 @@ export default {
 }
 </script>
 <style scoped>
-.tree-select-box{
+.tree-select-box {
   width: inherit;
 }
 </style>
