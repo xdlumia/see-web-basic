@@ -42,6 +42,7 @@
       :props="props"
     ></el-tree>
     <el-select
+      :disabled="disabled"
       slot="reference"
       class="tree-select-box"
       :collapse-tags="collapseTags"
@@ -75,6 +76,10 @@ export default {
       type: [Object, String, Number],
     },
     collapseTags: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
       type: Boolean,
       default: false
     },
